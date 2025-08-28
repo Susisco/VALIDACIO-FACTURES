@@ -3,6 +3,7 @@ package cat.ajterrassa.validaciofactures.controller;
 import cat.ajterrassa.validaciofactures.model.DeviceRegistration;
 import cat.ajterrassa.validaciofactures.model.DeviceRegistrationStatus;
 import cat.ajterrassa.validaciofactures.repository.DeviceRegistrationRepository;
+import cat.ajterrassa.validaciofactures.repository.DeviceRegistrationRepository.AppVersionCount;
 import cat.ajterrassa.validaciofactures.repository.UsuariRepository;
 import cat.ajterrassa.validaciofactures.model.Usuari;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,9 @@ public class DeviceRegistrationController {
     private UsuariRepository usuariRepository;
 
     @PostMapping("/devices/register")
-    public ResponseEntity<?> registerDevice(@RequestBody FidRequest request, Principal principal) {
+    public ResponseEntity<?> registerDevice(@RequestBody FidRequest request,
+                                            @RequestHeader(value = "X-App-Version", required = false) String appVersion,
+                                            Principal principal) {
         Long userId = null;
         if (principal != null) {
             Usuari user = usuariRepository.findByEmail(principal.getName()).orElse(null);
@@ -37,8 +40,14 @@ public class DeviceRegistrationController {
                         .status(DeviceRegistrationStatus.PENDING)
                         .build());
         registration.setUserId(userId);
+        registration.setAppVersion(appVersion);
         deviceRepository.save(registration);
         return ResponseEntity.ok(registration.getStatus());
+    }
+
+    @GetMapping("/devices/versions")
+    public List<AppVersionCount> deviceVersions() {
+        return deviceRepository.countByAppVersion();
     }
 
     @GetMapping("/admin/devices")

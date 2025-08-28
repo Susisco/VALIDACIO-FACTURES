@@ -23,6 +23,8 @@ public class DeviceRegistration {
     @Enumerated(EnumType.STRING)
     private DeviceRegistrationStatus status;
 
+    private String appVersion;
+
     public Long getId() {
         return id;
     }
@@ -53,5 +55,13 @@ public class DeviceRegistration {
 
     public void setStatus(DeviceRegistrationStatus status) {
         this.status = status;
+    }
+
+    public String getAppVersion() {
+        return appVersion;
+    }
+
+    public void setAppVersion(String appVersion) {
+        this.appVersion = appVersion;
     }
 }
