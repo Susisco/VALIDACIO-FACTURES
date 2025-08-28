@@ -86,6 +86,8 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
     implementation("com.google.firebase:firebase-installations-ktx")
+    implementation("com.google.android.play:integrity:1.3.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
     // --- Debug / Tests (els que ja tens) ---
     debugImplementation("androidx.compose.ui:ui-tooling-preview:1.5.4")

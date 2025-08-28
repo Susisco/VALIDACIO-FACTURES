@@ -16,10 +16,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Decideix la pantalla d'inici segons token
-        val prefs = getSharedPreferences("auth", MODE_PRIVATE)
-        val hasToken = !prefs.getString("token", null).isNullOrEmpty()
-        val startDestination = if (hasToken) Rutes.Inici else Rutes.Login
+        val startDestination = Rutes.Splash
 
         setContent {
             val navController = rememberNavController() // <-- es NavHostController

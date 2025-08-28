@@ -5,6 +5,7 @@ object Rutes {
 
     }
 
+    const val Splash = "splash"
     const val Login = "login"
     const val Inici = "home"
     const val NouAlbara = "nou-albara"
