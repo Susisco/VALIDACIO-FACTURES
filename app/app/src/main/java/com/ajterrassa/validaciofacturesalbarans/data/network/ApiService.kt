@@ -1,6 +1,8 @@
 package com.ajterrassa.validaciofacturesalbarans.data.network
 
 import com.ajterrassa.validaciofacturesalbarans.data.model.Albara
+import com.ajterrassa.validaciofacturesalbarans.data.model.DeviceRegistrationRequest
+import com.ajterrassa.validaciofacturesalbarans.data.model.DeviceRegistrationStatus
 import com.ajterrassa.validaciofacturesalbarans.data.model.LoginRequest
 import com.ajterrassa.validaciofacturesalbarans.data.model.LoginResponse
 import okhttp3.MultipartBody
@@ -15,6 +17,9 @@ interface ApiService {
 
     @GET("/api/albarans/me/mobile")
     suspend fun getAlbarans(@Header("Authorization") token: String): List<Albara>
+
+    @POST("/api/devices/register")
+    suspend fun registerDevice(@Body request: DeviceRegistrationRequest): DeviceRegistrationStatus
 
 
 

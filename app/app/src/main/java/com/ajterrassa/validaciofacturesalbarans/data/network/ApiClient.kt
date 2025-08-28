@@ -1,5 +1,7 @@
 package com.ajterrassa.validaciofacturesalbarans.data.network
 
+import com.ajterrassa.validaciofacturesalbarans.BuildConfig
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -26,8 +28,18 @@ object ApiClient {
         level = HttpLoggingInterceptor.Level.BASIC
     }
 
+    private val headerInterceptor = Interceptor { chain ->
+        val builder = chain.request().newBuilder()
+            .addHeader("X-App-Version", BuildConfig.VERSION_CODE.toString())
+        FidProvider.fid?.let { fid ->
+            builder.addHeader("X-Firebase-Installation-Id", fid)
+        }
+        chain.proceed(builder.build())
+    }
+
     // Cliente OkHttp SIN añadir aquí el header Authorization
     private val client = OkHttpClient.Builder()
+        .addInterceptor(headerInterceptor)
         .addInterceptor(logging)
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
