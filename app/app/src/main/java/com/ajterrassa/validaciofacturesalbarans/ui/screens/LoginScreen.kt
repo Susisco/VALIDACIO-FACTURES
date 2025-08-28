@@ -27,6 +27,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.Alignment
 import androidx.compose.material3.TextFieldDefaults
 import com.ajterrassa.validaciofacturesalbarans.ui.components.BottomNavBar
+import com.ajterrassa.validaciofacturesalbarans.data.model.DeviceRegistrationRequest
+import com.ajterrassa.validaciofacturesalbarans.data.model.DeviceRegistrationStatus
+import com.ajterrassa.validaciofacturesalbarans.data.network.FidProvider
+import com.google.firebase.FirebaseApp
+import com.google.firebase.installations.FirebaseInstallations
+import kotlinx.coroutines.tasks.await
 
 
 private val DarkBlue = Color(0xFF1565C0)
@@ -42,6 +48,28 @@ fun LoginScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
+
+    val context = navController.context
+
+    LaunchedEffect(Unit) {
+        try {
+            FirebaseApp.initializeApp(context)
+            val fid = FirebaseInstallations.getInstance().id.await()
+            FidProvider.fid = fid
+            val status = withContext(Dispatchers.IO) {
+                ApiClient.apiService.registerDevice(DeviceRegistrationRequest(fid))
+            }
+            if (status == DeviceRegistrationStatus.PENDING || status == DeviceRegistrationStatus.REVOKED) {
+                val msg = if (status == DeviceRegistrationStatus.PENDING) {
+                    "Dispositiu pendent d'aprovació"
+                } else {
+                    "Accés revocat"
+                }
+                Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+            }
+        } catch (_: Exception) {
+        }
+    }
 
     Scaffold(
         topBar = { AppTopBar(title = "Enviar albarà", navController = navController, showMenu = false) },

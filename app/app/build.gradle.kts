@@ -84,6 +84,9 @@ dependencies {
     // ML Kit: reconeixement de text (validació de foto)
     implementation("com.google.mlkit:text-recognition:16.0.1")
 
+    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+    implementation("com.google.firebase:firebase-installations-ktx")
+
     // --- Debug / Tests (els que ja tens) ---
     debugImplementation("androidx.compose.ui:ui-tooling-preview:1.5.4")
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.4")
