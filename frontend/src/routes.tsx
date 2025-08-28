@@ -40,6 +40,9 @@ const ProveidorsList = lazy(() => import("./pages/ProveidorsList"));
 const ProveidorFormNew = lazy(() => import("./pages/ProveidorFormNew"));
 const ProveidorFormEdit = lazy(() => import("./pages/ProveidorFormEdit"));
 
+//DEVICES
+const DeviceAdminPage = lazy(() => import("./pages/DeviceAdminPage"));
+
 const routesConfig: RouteObject[] = [
   {
     path: "/login",
@@ -220,6 +223,16 @@ const routesConfig: RouteObject[] = [
         element: (
           <RutaProtegidaPerRol rolsPermesos={["ADMINISTRADOR", "GESTOR"]}>
             <EdificisList />
+          </RutaProtegidaPerRol>
+        ),
+      },
+
+      // DEVICES (només admin)
+      {
+        path: "devices",
+        element: (
+          <RutaProtegidaPerRol rolsPermesos={["ADMINISTRADOR"]}>
+            <DeviceAdminPage />
           </RutaProtegidaPerRol>
         ),
       },
