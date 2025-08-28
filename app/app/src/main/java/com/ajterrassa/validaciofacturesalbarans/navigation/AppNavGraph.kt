@@ -17,6 +17,10 @@ fun AppNavGraph(
 ) {
     NavHost(navController = navController, startDestination = startDestination) {
 
+        composable(Rutes.Splash) {
+            SplashScreen(navController = navController)
+        }
+
         composable(Rutes.Login) {
             LoginScreen(navController = navController)
         }
