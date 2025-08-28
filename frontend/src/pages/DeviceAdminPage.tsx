@@ -1,3 +1,4 @@
+// frontend/src/pages/DeviceAdminPage.tsx
 import React from 'react';
 import { Button, Container, Loader, Table, Text, Title } from '@mantine/core';
 import {
