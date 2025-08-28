@@ -34,6 +34,9 @@ object ApiClient {
         FidProvider.fid?.let { fid ->
             builder.addHeader("X-Firebase-Installation-Id", fid)
         }
+        IntegrityTokenProvider.token?.let { token ->
+            builder.addHeader("X-Integrity-Token", token)
+        }
         chain.proceed(builder.build())
     }
 
