@@ -49,13 +49,14 @@ object ApiClient {
         //.protocols(listOf(Protocol.HTTP_1_1))
         .build()
 
-    // Retrofit + ApiService
-    val apiService: ApiService by lazy {
+    private val retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
-            .create(ApiService::class.java)
     }
+
+    val apiService: ApiService by lazy { retrofit.create(ApiService::class.java) }
+    val configService: ConfigService by lazy { retrofit.create(ConfigService::class.java) }
 }
