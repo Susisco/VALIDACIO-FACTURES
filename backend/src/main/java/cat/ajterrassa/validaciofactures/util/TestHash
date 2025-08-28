@@ -1,0 +1,9 @@
+import jakarta.annotation.PostConstruct;
+
+// test hash per obtenir la contrasenya encriptada
+@PostConstruct
+public void testHash() {
+    String raw = "admin123";
+    String hash = new BCryptPasswordEncoder().encode(raw);
+    System.out.println("HASH SISCO: " + hash);
+}

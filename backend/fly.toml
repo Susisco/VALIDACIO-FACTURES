@@ -1,0 +1,23 @@
+# fly.toml app configuration file generated for validacio-backend on 2025-06-18T10:07:16+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'validacio-backend'
+primary_region = 'cdg'
+
+[build]
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false    # ❌ no parar màquines
+  auto_start_machines = true    # ✅ arrencar-les si cal
+  min_machines_running = 1      # ✅ com a mínim 1 sempre en marxa
+  processes = ['app']
+
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

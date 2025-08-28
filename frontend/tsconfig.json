@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true, // Permite usar import/export con módulos CommonJS
+    "allowSyntheticDefaultImports": true, // Permite importar módulos sin usar `import * as`
+    "jsx": "react", // Soporte para JSX
+    "module": "ESNext", // Necesario para Jest
+    "target": "ESNext", // Target moderno
+    "moduleResolution": "node", // Resolución de módulos
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*", "src/__tests__/**/*"]
+}

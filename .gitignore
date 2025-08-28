@@ -1,0 +1,73 @@
+# === MONOREPO GITIGNORE ===
+
+# --- FRONTEND ---
+**/node_modules/
+**/dist/
+**/.env
+**/.env.*.local
+**/*.log
+**/.vercel
+
+# --- BACKEND ---
+backend/src/main/resources/application.properties
+backend/src/main/resources/application-local.properties
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# Maven
+/target/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# --- APP ---
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# --- IDEs ---
+.idea/
+.vscode/
+
+# --- SYSTEM/OS FILES ---
+.DS_Store
+Thumbs.db
+
+# --- NETBEANS ---
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# --- GENERAL ---
+*.class
+
+# --- OPTIONAL: Specific frontend exclusions for clarity ---
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*.local
+frontend/*.log
+frontend/.DS_Store
+frontend/Thumbs.db
+frontend/.vercel
