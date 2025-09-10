@@ -16,5 +16,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ValidacioFacturesAlbarans"
+rootProject.name = "validacio-factures"
 include(":app")
+

@@ -106,11 +106,11 @@ Text(
                 label = { Text("Email") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
+                colors = TextFieldDefaults.colors(
                     focusedTextColor = Color.Black,
                     cursorColor = Color.Black,
-                    focusedBorderColor = Color.Black,
-                    unfocusedBorderColor = Color(0xFF333333),
+                    focusedIndicatorColor = Color.Black,
+                    unfocusedIndicatorColor = Color(0xFF333333),
                     focusedLabelColor = Color.Black,
                     unfocusedLabelColor = Color(0xFF333333)
                 )
@@ -135,14 +135,14 @@ Text(
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedTextColor = Color.Black,
-                    cursorColor = Color.Black,
-                    focusedBorderColor = Color.Black,
-                    unfocusedBorderColor = Color(0xFF333333),
-                    focusedLabelColor = Color.Black,
-                    unfocusedLabelColor = Color(0xFF333333)
-                )
+ colors = TextFieldDefaults.colors(
+     focusedTextColor = Color.Black,
+     cursorColor = Color.Black,
+     focusedIndicatorColor = Color.Black,
+     unfocusedIndicatorColor = Color(0xFF333333),
+     focusedLabelColor = Color.Black,
+     unfocusedLabelColor = Color(0xFF333333)
+ )
             )
 
             Spacer(modifier = Modifier.height(24.dp))

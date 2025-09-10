@@ -1,3 +1,26 @@
+package com.ajterrassa.validaciofacturesalbarans
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.remember
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.compose.rememberNavController
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
+import kotlinx.coroutines.launch
+import com.ajterrassa.validaciofacturesalbarans.BuildConfig
+// Ajusta estos 6 IMPORTS a tus paquetes reales:
+import com.ajterrassa.validaciofacturesalbarans.data.network.ApiClient
+import com.ajterrassa.validaciofacturesalbarans.navigation.Rutes
+import com.ajterrassa.validaciofacturesalbarans.data.repo.AlbaraPendingRepository
+import com.ajterrassa.validaciofacturesalbarans.ui.components.RootScaffold
+import com.ajterrassa.validaciofacturesalbarans.ui.theme.ValidacioFacturesAlbaransTheme
+import com.ajterrassa.validaciofacturesalbarans.navigation.AppNavGraph
+
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
