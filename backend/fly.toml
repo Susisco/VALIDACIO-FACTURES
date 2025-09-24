@@ -11,8 +11,8 @@ primary_region = 'cdg'
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = false    # ❌ no parar màquines
-  auto_start_machines = true    # ✅ arrencar-les si cal
+  auto_stop_machines = true    # ❌ false per no parar màquines, true al reves per no tenir despesa
+  auto_start_machines = false    # ✅ true arrencar-les si cal. false per no tenir despesa
   min_machines_running = 1      # ✅ com a mínim 1 sempre en marxa
   processes = ['app']
 
