@@ -30,9 +30,6 @@ const UsuarisList = lazy(() => import("./pages/UsuarisList"));
 const UsuariFormNew = lazy(() => import("./pages/UsuariFormNew"));
 const UsuariFormEdit = lazy(() => import("./pages/UsuariFormEdit"));
 
-//DEVICES
-const DeviceAdminPage = lazy(() => import("./pages/DeviceAdminPage"));
-
 //PRESSUPOSTOS
 const PressupostosList = lazy(() => import("./pages/PressupostosList"));
 const PressupostFormNew = lazy(() => import("./pages/PressupostFormNew"));
