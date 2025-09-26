@@ -2,6 +2,7 @@ package cat.ajterrassa.validaciofactures.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class PlayIntegrityService {
     private final boolean validationEnabled;
     private final Set<String> acceptedTokens;
 
+    @Autowired
     public PlayIntegrityService(
             @Value("${play.integrity.validation-enabled:true}") boolean validationEnabled,
             @Value("${play.integrity.accepted-tokens:}") String acceptedTokens
