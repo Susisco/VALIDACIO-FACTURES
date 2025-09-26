@@ -7,7 +7,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -18,8 +17,14 @@ import java.util.Set;
 @Component
 public class DeviceAuthorizationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private DeviceRegistrationRepository deviceRepository;
+    private final DeviceRegistrationRepository deviceRepository;
+    private final ClientPlatformResolver platformResolver;
+
+    public DeviceAuthorizationFilter(DeviceRegistrationRepository deviceRepository,
+                                     ClientPlatformResolver platformResolver) {
+        this.deviceRepository = deviceRepository;
+        this.platformResolver = platformResolver;
+    }
 
     private static final String FID_HEADER = "X-Firebase-Installation-Id";
 
@@ -34,6 +39,10 @@ public class DeviceAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String fid = request.getHeader(FID_HEADER);
+        if (platformResolver.isWebRequest(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         if (fid == null) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             return;
