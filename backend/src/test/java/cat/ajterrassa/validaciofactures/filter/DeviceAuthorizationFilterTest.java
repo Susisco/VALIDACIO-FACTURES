@@ -1,5 +1,6 @@
 package cat.ajterrassa.validaciofactures.filter;
 
+import cat.ajterrassa.validaciofactures.config.ClientPlatformProperties;
 import cat.ajterrassa.validaciofactures.model.DeviceRegistration;
 import cat.ajterrassa.validaciofactures.model.DeviceRegistrationStatus;
 import cat.ajterrassa.validaciofactures.repository.DeviceRegistrationRepository;
@@ -14,8 +15,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -32,12 +33,29 @@ class DeviceAuthorizationFilterTest {
 
     @BeforeEach
     void setUp() {
-        ClientPlatformResolver resolver = new ClientPlatformResolver(Set.of("http://localhost:5173"));
-        filter = new DeviceAuthorizationFilter(deviceRegistrationRepository, resolver);
+        ClientPlatformProperties properties = new ClientPlatformProperties();
+        properties.setHeaderName("X-Client-Platform");
+        properties.setWebValue("WEB");
+        properties.setAndroidValue("ANDROID");
+        properties.setTrustedWebOrigins(List.of("http://localhost:5173"));
+        filter = new DeviceAuthorizationFilter(deviceRegistrationRepository, properties);
     }
 
     @Test
-    void shouldBypassValidationForWebRequests() throws ServletException, IOException {
+    void shouldBypassValidationForWebRequestsWithHeader() throws ServletException, IOException {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setRequestURI(PROTECTED_ENDPOINT);
+        request.addHeader("X-Client-Platform", "WEB");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        filter.doFilter(request, response, (req, res) -> {});
+
+        verifyNoInteractions(deviceRegistrationRepository);
+        assertThat(response.getStatus()).isNotEqualTo(HttpServletResponse.SC_FORBIDDEN);
+    }
+
+    @Test
+    void shouldBypassValidationForWebRequestsWithOrigin() throws ServletException, IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRequestURI(PROTECTED_ENDPOINT);
         request.addHeader("Origin", "http://localhost:5173");
