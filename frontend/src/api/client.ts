@@ -1,6 +1,9 @@
 // src/api/client.ts
 import axios from "axios";
 
+export const CLIENT_PLATFORM_HEADER = "X-Client-Platform";
+export const WEB_PLATFORM_VALUE = "WEB";
+
 // Instància d'Axios
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL, // p.ex. https://validacio-backend.fly.dev/api
@@ -9,8 +12,8 @@ export const api = axios.create({
 
 // token a cada request
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token")?.trim();
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  config.headers = config.headers ?? {};
+  config.headers[CLIENT_PLATFORM_HEADER] = WEB_PLATFORM_VALUE;
   return config;
 });
 

@@ -1,0 +1,6 @@
+app:
+  client-platform:
+    header-name: X-Client-Platform
+    web-value: WEB
+    android-value: ANDROID
+    trusted-web-origins: []

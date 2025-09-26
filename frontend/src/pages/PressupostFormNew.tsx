@@ -19,6 +19,7 @@ import { useProveidors } from "../api/proveidors";
 import { useCreatePressupost } from "../api/pressupostos";
 import type { PressupostInput } from "../api/pressupostos";
 import { useEffect } from "react";
+import { CLIENT_PLATFORM_HEADER, WEB_PLATFORM_VALUE } from "../api/client";
 
 export default function PressupostFormNew() {
   const navigate = useNavigate();
@@ -94,6 +95,9 @@ export default function PressupostFormNew() {
             {
               method: "POST",
               body: formData,
+              headers: {
+                [CLIENT_PLATFORM_HEADER]: WEB_PLATFORM_VALUE,
+              },
             }
           );
         } catch (error) {

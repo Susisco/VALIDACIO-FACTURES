@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Box, Title, Text, Paper, Group, Stack, Button } from "@mantine/core";
+import { CLIENT_PLATFORM_HEADER, WEB_PLATFORM_VALUE } from "../api/client";
 
 interface DetallMatchDTO {
   detallId: number;
@@ -40,6 +41,7 @@ export default function FacturaMatchAlbarans({ facturaId }: Props) {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          [CLIENT_PLATFORM_HEADER]: WEB_PLATFORM_VALUE,
         },
       });
 
@@ -64,6 +66,7 @@ export default function FacturaMatchAlbarans({ facturaId }: Props) {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          [CLIENT_PLATFORM_HEADER]: WEB_PLATFORM_VALUE,
         },
       });
 
@@ -86,6 +89,7 @@ export default function FacturaMatchAlbarans({ facturaId }: Props) {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
+            [CLIENT_PLATFORM_HEADER]: WEB_PLATFORM_VALUE,
           },
         }
       );

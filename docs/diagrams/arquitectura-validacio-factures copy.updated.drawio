@@ -1,0 +1,164 @@
+<mxfile host="65bd71144e">
+    <diagram id="arch1" name="Arquitectura Validació de Factures">
+        <mxGraphModel dx="2520" dy="1416" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="ecos" value="Ecosistema Validació de Factures" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fillColor=#f5f5f5;strokeColor=#999;verticalAlign=top;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="40" width="1800" height="980" as="geometry"/>
+                </mxCell>
+                <mxCell id="feBox" value="Frontend (Vercel)" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;rounded=1;strokeColor=#4A89DC;fillColor=#E6F2FF;" parent="ecos" vertex="1">
+                    <mxGeometry x="340" y="80" width="420" height="210" as="geometry"/>
+                </mxCell>
+                <mxCell id="reactApp" value="React App (Vite + Mantine)&#xa;- Login JWT&#xa;- CORS → backend&#xa;- Rols i rutes protegides" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#4A89DC;fillColor=#FFFFFF;" parent="feBox" vertex="1">
+                    <mxGeometry y="23" width="360" height="187" as="geometry"/>
+                </mxCell>
+                <mxCell id="appBox" value="App Android (EnviarAlbara)" style="swimlane;fontStyle=1;rounded=1;strokeColor=#8E44AD;fillColor=#F3E5F5;" parent="ecos" vertex="1">
+                    <mxGeometry x="330" y="330" width="420" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="composeApp" value="Compose App&#xa;- Enviament d&#39;albarans (foto + metadades)&#xa;- OkHttp Interceptor: FID + versionCode&#xa;- /config/app (versió mínima)&#xa;- Play Integrity" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#8E44AD;fillColor=#FFFFFF;" parent="appBox" vertex="1">
+                    <mxGeometry x="20" y="40" width="380" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="beBox" value="Backend (Fly.io) - Spring Boot API" style="swimlane;fontStyle=1;rounded=1;strokeColor=#27AE60;fillColor=#E8F5E9;verticalAlign=top;" parent="ecos" vertex="1">
+                    <mxGeometry x="790" y="80" width="520" height="580" as="geometry"/>
+                </mxCell>
+                <mxCell id="api" value="API REST" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#27AE60;fillColor=#FFFFFF;" parent="beBox" vertex="1">
+                    <mxGeometry x="30" y="200" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="minver" value="Control versió mínima" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#27AE60;fillColor=#FFFFFF;" parent="beBox" vertex="1">
+                    <mxGeometry x="260" y="260" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="fid" value="Whitelist dispositius (FID)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#27AE60;fillColor=#FFFFFF;" parent="beBox" vertex="1">
+                    <mxGeometry x="30" y="290" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="docs" value="Domini: Factures/Albarans/Pressupostos" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#27AE60;fillColor=#FFFFFF;" parent="beBox" vertex="1">
+                    <mxGeometry x="40" y="40" width="460" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="files" value="Fitxers (upload/download) → S3" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#27AE60;fillColor=#FFFFFF;" parent="beBox" vertex="1">
+                    <mxGeometry x="260" y="420" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="mail" value="Email/Notificacions (SMTP)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#27AE60;fillColor=#FFFFFF;" parent="beBox" vertex="1">
+                    <mxGeometry x="260" y="340" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="secrets" value="Secrets/Config (Fly.io Secrets)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#27AE60;fillColor=#FFFFFF;dashed=1;" parent="beBox" vertex="1">
+                    <mxGeometry x="30" y="500" width="460" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="security" value="Security + JWT" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#27AE60;fillColor=#FFFFFF;" parent="beBox" vertex="1">
+                    <mxGeometry x="110" y="110" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="dataBox" value="Dades i Serveis" style="swimlane;fontStyle=1;rounded=1;strokeColor=#C0392B;fillColor=#FDEDEC;" parent="ecos" vertex="1">
+                    <mxGeometry x="1350" y="80" width="380" height="580" as="geometry"/>
+                </mxCell>
+                <mxCell id="rds" value="MySQL (AWS RDS)" style="shape=datastore;whiteSpace=wrap;html=1;strokeColor=#C0392B;fillColor=#FFFFFF;" parent="dataBox" vertex="1">
+                    <mxGeometry x="20" y="40" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="s3" value="S3 Bucket: validacio-factures-uploads" style="shape=cloud;whiteSpace=wrap;html=1;strokeColor=#C0392B;fillColor=#FFFFFF;" parent="dataBox" vertex="1">
+                    <mxGeometry x="190" y="310" width="160" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="smtp" value="SMTP (Emails)" style="shape=cloud;whiteSpace=wrap;html=1;strokeColor=#C0392B;fillColor=#FFFFFF;" parent="dataBox" vertex="1">
+                    <mxGeometry x="20" y="260" width="160" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="gpf" value="Play Integrity / Firebase Installations" style="shape=cloud;whiteSpace=wrap;html=1;strokeColor=#C0392B;fillColor=#FFFFFF;" parent="dataBox" vertex="1">
+                    <mxGeometry x="200" y="130" width="160" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="noteToRds" style="endArrow=oval;dashed=1;strokeColor=#C0392B;" parent="dataBox" source="dataNote" target="rds" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="dataNote" value="RDS: Multi-AZ opcional, Subnet Groups privades, SG només des de backend.&#xa;Backups automàtics + snapshots.&#xa;S3: /uploads/albarans/albara_&lt;id&gt;_YYYYMMDD_HHmmss.png" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#C0392B;fillColor=#FFF5F5;" parent="dataBox" vertex="1">
+                    <mxGeometry x="30" y="430" width="340" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="cicdBox" value="CI/CD" style="swimlane;fontStyle=1;rounded=1;strokeColor=#F39C12;fillColor=#FEF5E7;" parent="ecos" vertex="1">
+                    <mxGeometry x="340" y="680" width="540" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="gha" value="GitHub Actions&#xa;- Build + Test + Deploy" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#F39C12;fillColor=#FFFFFF;" parent="cicdBox" vertex="1">
+                    <mxGeometry x="20" y="90" width="160" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="deployFe" value="Deploy Frontend → Vercel" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#F39C12;fillColor=#FFFFFF;" parent="cicdBox" vertex="1">
+                    <mxGeometry x="250" y="50" width="280" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="deployBe" value="Deploy Backend → Fly.io" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#F39C12;fillColor=#FFFFFF;" parent="cicdBox" vertex="1">
+                    <mxGeometry x="250" y="130" width="280" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="Deploy APP → Android" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#F39C12;fillColor=#FFFFFF;" vertex="1" parent="cicdBox">
+                    <mxGeometry x="250" y="204" width="280" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="Deploy" style="endArrow=block;rounded=0;strokeColor=#555;labelBackgroundColor=#fff;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="cicdBox" target="2" source="gha">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="180" y="200" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="userWeb" value="Usuari Web" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" parent="ecos" vertex="1">
+                    <mxGeometry x="100" y="110" width="50" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="userApp" value="Usuari Mòbil" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" parent="ecos" vertex="1">
+                    <mxGeometry x="100" y="420" width="50" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="admin" value="Administrador / Gestor" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" parent="ecos" vertex="1">
+                    <mxGeometry x="100" y="260" width="50" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge1" style="endArrow=block;rounded=0;strokeColor=#555;" parent="ecos" source="reactApp" target="api" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="edge2" style="endArrow=block;rounded=0;strokeColor=#555;" parent="ecos" source="composeApp" target="api" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge3" value="JDBC" style="endArrow=block;rounded=0;strokeColor=#555;labelBackgroundColor=#fff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="ecos" source="api" target="rds" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1230" y="250"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="edge4" value="Upload/Download" style="endArrow=block;rounded=0;strokeColor=#555;labelBackgroundColor=#fff;" parent="ecos" source="files" target="s3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge5" value="SMTP" style="endArrow=block;rounded=0;strokeColor=#555;labelBackgroundColor=#fff;" parent="ecos" source="mail" target="smtp" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge6" value="FID / versionCode" style="endArrow=block;rounded=0;strokeColor=#555;labelBackgroundColor=#fff;" parent="ecos" source="composeApp" target="fid" edge="1">
+                    <mxGeometry x="-0.7022" y="-3" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="edge7" value="CORS + JWT" style="endArrow=block;rounded=0;strokeColor=#555;labelBackgroundColor=#fff;" parent="ecos" source="reactApp" target="security" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge8" value="Deploy" style="endArrow=block;rounded=0;strokeColor=#555;labelBackgroundColor=#fff;" parent="ecos" source="gha" target="deployFe" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge9" value="Deploy" style="endArrow=block;rounded=0;strokeColor=#555;labelBackgroundColor=#fff;" parent="ecos" source="gha" target="deployBe" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge10" value="Navega (HTTPS)" style="endArrow=block;rounded=0;strokeColor=#777;dashed=1;labelBackgroundColor=#fff;" parent="ecos" source="userWeb" target="reactApp" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge11" value="Ús app (HTTPS)" style="endArrow=block;rounded=0;strokeColor=#777;dashed=1;labelBackgroundColor=#fff;" parent="ecos" source="userApp" target="composeApp" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge12" value="Operació / Gestió" style="endArrow=block;rounded=0;strokeColor=#777;dashed=1;labelBackgroundColor=#fff;" parent="ecos" source="admin" target="reactApp" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="vcBox" value="Control de versions (GitHub)" style="swimlane;fontStyle=1;rounded=1;strokeColor=#34495E;fillColor=#ECF0F1;" parent="ecos" vertex="1">
+                    <mxGeometry x="1030" y="670" width="320" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="vcRepos" value="Repos:&#xa;- frontend&#xa;- backend&#xa;- android&#xa;- docs" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#34495E;fillColor=#FFFFFF;" parent="vcBox" vertex="1">
+                    <mxGeometry x="20" y="40" width="280" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="vcPolicy" value="Política:&#xa;- main protegit (PR obligatori)&#xa;- branches de features&#xa;- tags &amp; releases" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#34495E;fillColor=#FFFFFF;" parent="vcBox" vertex="1">
+                    <mxGeometry x="20" y="150" width="280" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="vcIssues" value="Issues / Projects (opcional)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#34495E;fillColor=#FFFFFF;" parent="vcBox" vertex="1">
+                    <mxGeometry x="20" y="260" width="280" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="vcToCi" value="trigger (push/PR)" style="endArrow=block;rounded=0;strokeColor=#555;labelBackgroundColor=#fff;" parent="ecos" source="vcBox" target="cicdBox" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="noteToS3" style="endArrow=oval;dashed=1;strokeColor=#C0392B;" parent="ecos" source="dataNote" target="files" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
