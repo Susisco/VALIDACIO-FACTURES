@@ -59,3 +59,13 @@ frontend/.vercel
 app/.gradle/
 /local.properties
 /app/local.properties
+
+/app/
+/gradle/
+/gradlew
+/gradlew.bat
+/build.gradle.kts
+/gradle.properties
+/settings.gradle.kts
+/local.properties
+/build/
