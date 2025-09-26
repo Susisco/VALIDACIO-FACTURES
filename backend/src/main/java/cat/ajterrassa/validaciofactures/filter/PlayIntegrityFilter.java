@@ -28,16 +28,24 @@ public class PlayIntegrityFilter extends OncePerRequestFilter {
     );
 
     private final PlayIntegrityService playIntegrityService;
+    private final ClientPlatformResolver platformResolver;
 
-    public PlayIntegrityFilter(PlayIntegrityService playIntegrityService) {
+    public PlayIntegrityFilter(PlayIntegrityService playIntegrityService,
+                               ClientPlatformResolver platformResolver) {
         this.playIntegrityService = playIntegrityService;
+        this.platformResolver = platformResolver;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        if (platformResolver.isWebRequest(request)) {
+            logger.debug("Skipping Play Integrity validation for web request to {}", request.getRequestURI());
+            filterChain.doFilter(request, response);
+            return;
+        }
         String integrityToken = request.getHeader(INTEGRITY_HEADER);
-        if (!playIntegrityService.validateToken(integrityToken)) {
+        if (integrityToken == null || !playIntegrityService.validateToken(integrityToken)) {
             logger.warn("Rejected request to {} due to invalid Play Integrity token", request.getRequestURI());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
