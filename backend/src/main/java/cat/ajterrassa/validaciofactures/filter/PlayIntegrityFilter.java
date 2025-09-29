@@ -14,8 +14,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Set;
+import org.springframework.core.annotation.Order;
 
 @Component
+@Order(1) // PlayIntegrityFilter debe ejecutarse primero
 public class PlayIntegrityFilter extends OncePerRequestFilter {
 
     static final String INTEGRITY_HEADER = "X-Play-Integrity-Token";

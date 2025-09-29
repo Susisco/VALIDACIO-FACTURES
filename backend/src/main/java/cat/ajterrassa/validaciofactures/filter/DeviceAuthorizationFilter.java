@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.core.annotation.Order;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -19,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+@Order(2) // DeviceAuthorizationFilter debe ejecutarse después de PlayIntegrityFilter
 public class DeviceAuthorizationFilter extends OncePerRequestFilter {
 
     private static final String FID_HEADER = "X-Firebase-Installation-Id";

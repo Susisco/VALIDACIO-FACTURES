@@ -1,5 +1,6 @@
 package cat.ajterrassa.validaciofactures.filter;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +28,25 @@ public class ClientPlatformResolver {
     private static final String WEB_PLATFORM = "web";
     private static final Logger logger = LoggerFactory.getLogger(ClientPlatformResolver.class);
 
-    private final Set<String> allowedWebOrigins;
+    private Set<String> allowedWebOrigins;
+
+    @Value("${platform.web.origins:${cors.allowed.origin:http://localhost:5173}}")
+    private String configuredOrigins;
+
+    public ClientPlatformResolver() {
+        // Constructor por defecto para Spring
+    }
+
+    @PostConstruct
+    private void initialize() {
+        this.allowedWebOrigins = parseOrigins(configuredOrigins);
+        if (logger.isDebugEnabled()) {
+            logger.debug("ClientPlatformResolver initialized with origins: {}", allowedWebOrigins);
+        }
+    }
 
     public ClientPlatformResolver(
-            @Value("${platform.web.origins:${cors.allowed.origin:}}") String configuredOrigins
+            @Value("${platform.web.origins:http://localhost:5173}") String configuredOrigins
     ) {
         this(parseOrigins(configuredOrigins));
     }

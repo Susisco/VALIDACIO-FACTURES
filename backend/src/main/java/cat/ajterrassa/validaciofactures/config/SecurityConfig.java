@@ -17,18 +17,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.config.Customizer;
 
 import cat.ajterrassa.validaciofactures.security.CustomAccessDeniedHandler;
-import cat.ajterrassa.validaciofactures.security.JwtFilter;
 import cat.ajterrassa.validaciofactures.security.UserDetailsServiceImpl;
-import cat.ajterrassa.validaciofactures.filter.DeviceAuthorizationFilter;
-import cat.ajterrassa.validaciofactures.filter.PlayIntegrityFilter;
-import cat.ajterrassa.validaciofactures.filter.VersionCheckFilter;
+import cat.ajterrassa.validaciofactures.security.JwtFilter;
 
 @Configuration
 @EnableMethodSecurity // ✅ AIXÒ ÉS EL QUE NECESSITES per habilitar les anotacions @PreAuthorize i @PostAuthorize
 public class SecurityConfig {
-
-    @Autowired
-    private JwtFilter jwtFilter;
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
@@ -37,13 +31,9 @@ public class SecurityConfig {
     private CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Autowired
-    private PlayIntegrityFilter playIntegrityFilter;
+    private JwtFilter jwtFilter;
 
-    @Autowired
-    private DeviceAuthorizationFilter deviceAuthorizationFilter;
-
-    @Autowired
-    private VersionCheckFilter versionCheckFilter;
+    // Los filtros ahora se registran automáticamente por @Order, no necesitan inyección manual
 
     /**
      * Criterio de organización: 1. Primero se definen las rutas públicas (sin
@@ -105,9 +95,7 @@ public class SecurityConfig {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Filtros y autenticación
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(playIntegrityFilter, JwtFilter.class)
-                .addFilterBefore(deviceAuthorizationFilter, JwtFilter.class)
-                .addFilterAfter(versionCheckFilter, DeviceAuthorizationFilter.class)
+                // ✅ AÑADIR EL JWT FILTER A LA CADENA DE FILTROS
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

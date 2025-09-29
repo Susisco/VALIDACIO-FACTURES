@@ -17,8 +17,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 
 @Component
+@Order(4) // JwtFilter debe ejecutarse después de otros filtros de seguridad
 public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -41,7 +43,8 @@ public class JwtFilter extends OncePerRequestFilter {
         boolean isPublicRoute = (
             (method.equals("POST") && path.equals("/api/albarans")) ||
             (method.equals("POST") && path.equals("/api/albarans/frontend")) ||
-            path.equals("/api/auth/login")  // ❗ NOMÉS login és públic
+            path.equals("/api/auth/login") ||  // ❗ login és públic
+            (method.equals("GET") && path.startsWith("/api/fitxers/"))  // ❗ fitxers són públics per GET
         );
 
         if (method.equalsIgnoreCase("OPTIONS") || isPublicRoute) {

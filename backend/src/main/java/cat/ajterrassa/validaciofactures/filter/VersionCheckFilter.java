@@ -10,10 +10,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.core.annotation.Order;
 
 import java.io.IOException;
 
 @Component
+@Order(3) // VersionCheckFilter debe ejecutarse después de DeviceAuthorizationFilter
 public class VersionCheckFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(VersionCheckFilter.class);
