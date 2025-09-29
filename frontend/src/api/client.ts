@@ -10,14 +10,23 @@ export const api = axios.create({
   // ❌ NO definim Content-Type global
 });
 
-// token a cada request
+// ✅ Interceptor de petició — afegeix plataforma i token
 api.interceptors.request.use((config) => {
   config.headers = config.headers ?? {};
+  
+  // Afegir header de plataforma
   config.headers[CLIENT_PLATFORM_HEADER] = WEB_PLATFORM_VALUE;
+  
+  // Afegir token JWT si existeix
+  const token = localStorage.getItem("token")?.trim();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  
   return config;
 });
 
-// 🔐 Funció per obtenir el token // (Opcional) Mantén això només si encara tens crides amb fetch que necessiten el header manual
+// 🔐 Funció per obtenir el token (per compatibilitat)
 export const getAuthHeader = () => {
   const token = localStorage.getItem("token")?.trim();
   if (!token) {
@@ -25,15 +34,6 @@ export const getAuthHeader = () => {
   }
   return `Bearer ${token}`;
 };
-
-// ✅ Interceptor de petició — afegeix el token
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = getAuthHeader();
-  }
-  return config;
-});
 
 // ✅ Interceptor de resposta — gestiona errors 401 automàticament
 api.interceptors.response.use(
