@@ -37,6 +37,9 @@ Pots centralitzar els orígens en properties i llegir-los com a llista.
 @Configuration
 public class CorsConfig {
 
+    // Comentado el CorsFilter manual para evitar conflictos
+    // Solo usaremos CorsConfigurationSource + Spring Security
+    /*
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public CorsFilter corsFilter() {
@@ -63,6 +66,7 @@ public class CorsConfig {
 
         return new CorsFilter(source);
     }
+    */
 
 
 /**

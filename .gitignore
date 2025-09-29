@@ -7,6 +7,10 @@
 **/.env.*.local
 **/*.log
 **/.vercel
+# Frontend environment files
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.production.local
 
 # --- BACKEND ---
 backend/src/main/resources/application.properties
@@ -62,6 +66,16 @@ Thumbs.db
 # Archivos de configuración local
 .env.production.local
 .env.development.local
+
+# AWS Credentials (NEVER commit these!)
+.aws/
+aws-credentials.txt
+credentials.json
+
+# Environment variables files
+.env
+.env.local
+.env.*.local
 
 # --- LOGS ---
 logs/
