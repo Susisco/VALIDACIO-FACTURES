@@ -21,7 +21,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/factures")
-@CrossOrigin(origins = "${cors.allowed.origin}")// permet accés al frontend, configurat el port a application.properties 
 public class FacturaController {
 
     @Autowired
@@ -98,19 +97,16 @@ public class FacturaController {
     /**
      * **********************************************************************
      */
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('GESTOR')")
     @GetMapping("/{id}/auto-relate")
     public ResponseEntity<AutoRelateDTO> autoRelate(@PathVariable Long id) {
         return ResponseEntity.ok(service.autoRelate(id));
     }
 
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('GESTOR')")
     @GetMapping("/{id}/albarans-candidats")
     public ResponseEntity<List<Albara>> getAlbaransCandidats(@PathVariable Long id) {
         return ResponseEntity.ok(service.getAlbaransCandidats(id));
     }
 
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('GESTOR')")
     @PutMapping("/{id}/afegir-albara/{albaraId}")
     public ResponseEntity<Factura> afegirAlbara(@PathVariable Long id, @PathVariable Long albaraId) {
         return ResponseEntity.ok(service.afegirAlbaraManualment(id, albaraId));

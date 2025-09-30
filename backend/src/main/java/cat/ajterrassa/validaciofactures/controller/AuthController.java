@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "${cors.allowed.origin}")// permet accés al frontend, configurat el port a application.properties 
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);

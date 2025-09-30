@@ -93,10 +93,12 @@ public class CorsConfig {
 
 @Bean
     public CorsConfigurationSource corsConfigurationSource(
-            @Value("${cors.allowed.origin}") String allowedOrigin
+            @Value("${cors.allowed.origin}") String allowedOrigins
     ) {
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of(allowedOrigin));
+        // Dividim les URLs separades per comes
+        String[] origins = allowedOrigins.split(",");
+        cfg.setAllowedOrigins(List.of(origins));
         cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         cfg.setAllowedHeaders(List.of("*"));
         cfg.setAllowCredentials(true);
