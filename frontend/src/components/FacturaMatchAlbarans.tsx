@@ -32,12 +32,12 @@ export default function FacturaMatchAlbarans({ facturaId }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchMatches = async () => {
+  const fetchMatches = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`/api/factures/${facturaId}/auto-relate`, {
+      const res = await fetch(`https://validacio-backend.fly.dev/api/factures/${facturaId}/auto-relate`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -57,12 +57,12 @@ export default function FacturaMatchAlbarans({ facturaId }: Props) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [facturaId]);
 
   const fetchCandidats = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`/api/factures/${facturaId}/albarans-candidats`, {
+      const res = await fetch(`https://validacio-backend.fly.dev/api/factures/${facturaId}/albarans-candidats`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -84,7 +84,7 @@ export default function FacturaMatchAlbarans({ facturaId }: Props) {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(
-        `/api/factures/${facturaId}/treure-albara/${albaraId}`,
+        `https://validacio-backend.fly.dev/api/factures/${facturaId}/treure-albara/${albaraId}`,
         {
           method: "DELETE",
           headers: {
@@ -107,6 +107,10 @@ export default function FacturaMatchAlbarans({ facturaId }: Props) {
   useEffect(() => {
     fetchCandidats();
   }, [fetchCandidats]);
+
+  useEffect(() => {
+    fetchMatches();
+  }, [fetchMatches]);
 
   return (
     <Box mt="md">
@@ -196,8 +200,12 @@ export default function FacturaMatchAlbarans({ facturaId }: Props) {
       {candidats.length > 0 && (
         <Box mt="xl">
           <Title order={5} mb="sm">
-            📥 Albarans disponibles per editar
+            📥 Tots els albarans del proveïdor disponibles
           </Title>
+          <Text size="sm" c="dimmed" mb="md">
+            Aquests són tots els albarans del proveïdor que encara no estan assignats a cap factura.
+            Pots relacionar-los manualment si corresponen a aquesta factura.
+          </Text>
           <Paper withBorder p="xs">
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
@@ -206,31 +214,69 @@ export default function FacturaMatchAlbarans({ facturaId }: Props) {
                     Referència
                   </th>
                   <th style={{ padding: "8px", textAlign: "left" }}>Import</th>
+                  <th style={{ padding: "8px", textAlign: "left" }}>Coincidència</th>
                   <th style={{ padding: "8px", textAlign: "left" }}>Acció</th>
                 </tr>
               </thead>
               <tbody>
-                {candidats.map((a) => (
-                  <tr key={a.id}>
-                    <td style={{ padding: "8px" }}>{a.referenciaDocument}</td>
-                    <td style={{ padding: "8px" }}>
-                      {a.importTotal.toFixed(2)} €
-                    </td>
-                    <td style={{ padding: "8px" }}>
-                      <a
-                        href={`/albarans/${a.id}/edit`}
-                        target="_blank" // Abre en una nueva ventana
-                        style={{
-                          color: "#007BFF",
-                          textDecoration: "none",
-                          fontSize: "14px",
-                        }}
-                      >
-                        ✏️ Edita
-                      </a>
-                    </td>
-                  </tr>
-                ))}
+                {candidats.map((a) => {
+                  // Obtenim les referències de les línies de la factura per comparar
+                  const referenciesFactura = resultats.flatMap(albara => 
+                    albara.liniesFacturesRelacionades.map(linia => linia.referenciaDocumentDetall)
+                  );
+                  
+                  // Comprovem tipus de coincidència
+                  const coincideixReferencia = referenciesFactura.some(ref => 
+                    ref.includes(a.referenciaDocument) || a.referenciaDocument.includes(ref)
+                  );
+                  
+                  const importsFactura = resultats.flatMap(albara => 
+                    albara.liniesFacturesRelacionades.map(linia => linia.importTotalDetall)
+                  );
+                  
+                  const coincideixImport = importsFactura.some(imp => 
+                    Math.abs(imp - a.importTotal) < 0.01
+                  );
+                  
+                  let tipusCoincidencia = "❌ Cap";
+                  let colorCoincidencia = "#666";
+                  
+                  if (coincideixReferencia && coincideixImport) {
+                    tipusCoincidencia = "✅ Referència + Import";
+                    colorCoincidencia = "green";
+                  } else if (coincideixReferencia) {
+                    tipusCoincidencia = "⚠️ Només referència";
+                    colorCoincidencia = "orange";
+                  } else if (coincideixImport) {
+                    tipusCoincidencia = "⚠️ Només import";
+                    colorCoincidencia = "orange";
+                  }
+                  
+                  return (
+                    <tr key={a.id}>
+                      <td style={{ padding: "8px" }}>{a.referenciaDocument}</td>
+                      <td style={{ padding: "8px" }}>
+                        {a.importTotal.toFixed(2)} €
+                      </td>
+                      <td style={{ padding: "8px", color: colorCoincidencia, fontWeight: "bold" }}>
+                        {tipusCoincidencia}
+                      </td>
+                      <td style={{ padding: "8px" }}>
+                        <a
+                          href={`/albarans/${a.id}/edit`}
+                          target="_blank"
+                          style={{
+                            color: "#007BFF",
+                            textDecoration: "none",
+                            fontSize: "14px",
+                          }}
+                        >
+                          ✏️ Edita
+                        </a>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </Paper>
