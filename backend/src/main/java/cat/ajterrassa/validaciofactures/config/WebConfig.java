@@ -9,12 +9,13 @@ import java.nio.file.Paths;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-
+    @Value("${cors.allowed.origin}")
+    private String allowedOrigin;
         
     @Override   
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedOrigins("https://validacio-factures.vercel.app")
+            .allowedOrigins(allowedOrigin)
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
             .allowedHeaders("*")
             .allowCredentials(true);

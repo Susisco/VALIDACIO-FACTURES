@@ -28,6 +28,7 @@ import ModalProveidorSelector from "../components/ModalProveidorSelector";
 import { useDisclosure } from "@mantine/hooks";
 import HistoricCanvisModal from "../components/HistoricCanvisModal";
 import { useHistoricCanvis } from "../api/historic";
+import { openAlbaraFile } from "../api/fitxers";
 
 // Camps editables del formulari
 interface FormValues {
@@ -362,18 +363,22 @@ export default function AlbaraFormEdit() {
                 const isImg = /\.(png|jpe?g)$/i.test(item.fitxerAdjunt || "");
                 return (
                   <>
-                    <a
-                      href={fileUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      type="button"
+                      onClick={() => openAlbaraFile(albaraId)}
                       style={{
+                        background: "none",
+                        border: "none",
                         color: "#1a73e8",
                         textDecoration: "underline",
                         fontSize: "0.9rem",
+                        cursor: "pointer",
+                        padding: 0,
+                        textAlign: "left"
                       }}
                     >
                       Veure fitxer adjunt
-                    </a>
+                    </button>
                     {isImg && (
                       <img
                         src={fileUrl}

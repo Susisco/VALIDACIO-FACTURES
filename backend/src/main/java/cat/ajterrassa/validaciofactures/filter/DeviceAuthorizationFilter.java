@@ -28,6 +28,7 @@ public class DeviceAuthorizationFilter extends OncePerRequestFilter {
     private static final Set<String> EXCLUDED_PATHS = Set.of(
             "/api/auth",
             "/api/devices/register",
+            "/api/fitxers",
             "/config",
             "/ping"
     );
