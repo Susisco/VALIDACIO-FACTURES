@@ -78,7 +78,7 @@ Frontend runs on: http://localhost:5173
 ## 📁 Project Structure
 
 ```
-├── backend/                 # Spring Boot API
+├── backend/                 # Spring Boot API (Maven)
 │   ├── src/main/java/
 │   │   ├── config/         # Security, CORS, database config
 │   │   ├── controller/     # REST endpoints
@@ -90,13 +90,14 @@ Frontend runs on: http://localhost:5173
 │   └── src/main/resources/
 │       ├── application.properties           # Local config
 │       └── application-prod.properties      # Production config
-├── frontend/               # React + TypeScript
+├── frontend/               # React + TypeScript (Vite)
 │   ├── src/
 │   │   ├── api/           # Axios client, API calls
 │   │   ├── components/    # Reusable UI components
 │   │   └── pages/         # Route components
-└── docs/                  # Documentation
-    └── instruccions/      # Setup and migration guides
+├── docs/                  # Documentation
+│   └── instruccions/      # Setup and migration guides
+└── docker-compose.yml     # Local MySQL database
 ```
 
 ## 🔄 Recent Changes
