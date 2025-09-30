@@ -2,25 +2,85 @@
 
 ## Resumen de pasos para hacer deploy del frontend
 
-### 1. Instalación y configuración inicial
-```bash
-# Instalar Vercel CLI (si no está instalado)
-npm i -g vercel
+### 🏗️ Estado actual del proyecto
 
-# Autenticarse en Vercel
-vercel login
+**Projecte connectat a GitHub amb deploy automàtic activat:**
+- **Repositori**: `Susisco/VALIDACIO-FACTURES`
+- **Projecte Vercel**: `frontend-fund` 
+- **Domini**: https://validacio-factures.vercel.app
+- **Branca de producció**: `main`
+- **Root Directory**: `frontend/` (projecte multi-directori)
+
+**Cada `git push` a la branca `main` desplega automàticament** ✅
+
+---
+
+## 🚀 Mètodes de desplegament
+
+### Mètode 1: Deploy automàtic via GitHub (ACTUAL) ⭐
+**El mètode que utilitzem actualment**
+
+```bash
+# 1. Fer canvis al codi
+# 2. Commit i push
+git add .
+git commit -m "Descripció dels canvis"
+git push
+
+# 3. Vercel desplega automàticament en ~2-3 minuts
+# 4. Verificar a: https://validacio-factures.vercel.app
 ```
 
-### 2. Configuración del proyecto
+### Mètode 2: Deploy manual via Visual Studio Code
+**Per desplegaments urgents o quan GitHub falla**
 
-#### Variables de entorno (`frontend/.env.production`)
 ```bash
-# URL de l'API del backend. Aquesta variable s'utilitza per fer peticions al servidor backend.
-# Assegura't que aquesta URL sigui accessible des del frontend.
+# Des del terminal de VSCode, dins de /frontend
+cd frontend
+
+# Deploy manual forçat
+vercel --prod
+
+# O deploy amb força (ignora cache)
+vercel --prod --force
+```
+
+---
+
+## ⚙️ Configuració tècnica del projecte
+
+### 1. Configuració inicial (ja implementada)
+```bash
+# Instal·lar Vercel CLI (si no està instal·lat)
+npm i -g vercel
+
+# Autenticar-se a Vercel
+vercel login
+
+# Connectar projecte (ja fet)
+vercel link
+```
+
+### 2. Variables d'entorn (configurades)
+
+#### Vercel Environment Variables:
+- `VITE_API_BASE_URL=https://validacio-backend.fly.dev/api`
+
+#### Frontend `.env.production` (no necessari amb GitHub):
+```bash
+# Aquestes variables es gestionen des de Vercel Dashboard
 VITE_API_BASE_URL=https://validacio-backend.fly.dev/api
 ```
 
-#### Configuración Vercel (`frontend/vercel.json`)
+### 3. Configuració de fitxers (implementats)
+
+#### Root Directory Configuration (Vercel):
+- **Root Directory**: `frontend`
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Install Command**: `npm install`
+
+#### Configuració Vercel (`frontend/vercel.json`) - implementat:
 ```json
 {
   "version": 2,
@@ -32,12 +92,23 @@ VITE_API_BASE_URL=https://validacio-backend.fly.dev/api
     }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "/index.html" }
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
   ]
 }
 ```
 
-#### Configuración Vite (`frontend/vite.config.ts`)
+#### Configuració Vite (`frontend/vite.config.ts`) - implementat:
 ```typescript
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -61,30 +132,66 @@ export default defineConfig(({ mode }) => {
 });
 ```
 
-### 3. Comandos de deploy
+---
 
-#### Deploy inicial (primera vez)
+## 🛠️ Workflow de desenvolupament actual
+
+### Desenvolupament local:
 ```bash
 cd frontend
-
-# Linkear el proyecto con Vercel
-vercel link
-
-# Configurar variable de entorno
-vercel env add VITE_API_BASE_URL production
-# Cuando te pregunte el valor, introduce: https://validacio-backend.fly.dev/api
-
-# Hacer el primer deploy
-vercel --prod
+npm run dev
+# L'aplicació s'executa a http://localhost:5173
 ```
 
-#### Deploy posteriores (actualizaciones)
+### Actualització i desplegament (mètode principal):
+```bash
+# 1. Fer canvis al codi a Visual Studio Code
+# 2. Commit dels canvis
+git add .
+git commit -m "Descripció clara dels canvis"
+
+# 3. Push al repositori (triggerea deploy automàtic)
+git push
+
+# 4. Verificar desplegament a Vercel Dashboard
+# 5. Comprovar l'aplicació a https://validacio-factures.vercel.app
+```
+
+### Desplegament manual d'emergència:
 ```bash
 cd frontend
-vercel --prod
+vercel --prod --force
 ```
 
-### 4. Comandos útiles para monitorización
+---
+
+## 📊 URLs i enllaços importants
+
+### Aplicació en producció:
+```
+https://validacio-factures.vercel.app
+```
+
+### API Backend:
+```
+https://validacio-backend.fly.dev/api
+```
+
+### Vercel Dashboard:
+```
+https://vercel.com/francesc-hidalgo-marquezs-projects/frontend-fund
+```
+
+### Repositori GitHub:
+```
+https://github.com/Susisco/VALIDACIO-FACTURES
+```
+
+---
+
+## 🔧 Comandos útils per monitorització i gestió
+
+### Gestió del projecte:
 
 ```bash
 # Ver información del proyecto
@@ -103,126 +210,231 @@ vercel open
 vercel inspect
 ```
 
-### 5. Configuración de variables de entorno
-
-#### Desde la terminal:
 ```bash
-# Añadir nueva variable de entorno
+# Veure informació del projecte
+vercel ls
+
+# Veure variables d'entorn configurades  
+vercel env ls
+
+# Veure logs de desplegament
+vercel logs
+
+# Obrir l'aplicació al navegador
+vercel open
+
+# Veure l'estat del projecte
+vercel inspect
+
+# Forçar redeploy manual
+vercel --prod --force
+```
+
+### Gestió de variables d'entorn:
+```bash
+# Afegir nova variable d'entorn
 vercel env add NOMBRE_VARIABLE
 
-# Eliminar variable de entorno
+# Eliminar variable d'entorn
 vercel env rm NOMBRE_VARIABLE
 
-# Listar todas las variables
+# Llistar totes les variables
 vercel env ls
 ```
 
-#### Desde el Dashboard de Vercel:
-1. Ve a [vercel.com](https://vercel.com) y accede a tu proyecto
-2. Ve a **Settings** → **Environment Variables**
-3. Añadir/Editar/Eliminar variables según necesites
-
-### 6. Configuración automática con GitHub
-
-#### Para deploy automático:
-1. Conecta tu repositorio GitHub a Vercel
-2. En **Settings** → **Git**, configura:
-   - **Production Branch**: `main`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-3. Cada `git push` a la rama `main` desplegará automáticamente
-
-### 7. URLs de la aplicación
-
-Una vez desplegada, la aplicación estará disponible en:
-```
-https://tu-proyecto.vercel.app
-```
-
-En nuestro caso:
-```
-https://frontend-bi43tjcbk-francesc-hidalgo-marquezs-projects.vercel.app
-```
-
-## Notas importantes
-
-- **Variables de entorno**: Las variables que empiecen por `VITE_` estarán disponibles en el cliente. No pongas secretos aquí.
-
-- **Build automático**: Vercel detecta automáticamente que es un proyecto Vite y usa la configuración correcta.
-
-- **Dominio personalizado**: Puedes configurar un dominio personalizado en **Settings** → **Domains**.
-
-- **Redirects**: El archivo `vercel.json` está configurado para que todas las rutas apunten a `index.html` (necesario para React Router).
-
-## Estructura del proyecto frontend
-
-```
-frontend/
-├── .env.production          # Variables de entorno para producción
-├── vercel.json             # Configuración de Vercel
-├── vite.config.ts          # Configuración de Vite
-├── package.json            # Dependencias y scripts
-├── src/
-│   ├── api/
-│   │   └── client.ts       # Cliente HTTP que usa VITE_API_BASE_URL
-│   ├── pages/              # Páginas de la aplicación
-│   ├── components/         # Componentes reutilizables
-│   └── ...
-└── dist/                   # Archivos generados por el build (no subir a Git)
-```
-
-## Solución de problemas comunes
-
-### Build falla
+### Gestió de GitHub i Git:
 ```bash
-# Verificar dependencias
+# Veure estat del repositori
+git status
+
+# Veure historial de commits
+git log --oneline
+
+# Veure branches
+git branch -a
+
+# Canviar de branch
+git checkout nom-branch
+```
+
+---
+
+## ⚙️ Configuració automàtica amb GitHub (implementat)
+
+### Deploy automàtic configurat:
+✅ **Repositori connectat**: `Susisco/VALIDACIO-FACTURES`  
+✅ **Branca de producció**: `main`  
+✅ **Root Directory**: `frontend`  
+✅ **Build Command**: `npm run build`  
+✅ **Output Directory**: `dist`  
+✅ **Variables d'entorn**: Configurades a Vercel Dashboard  
+
+### Comportament actual:
+- Cada `git push` a `main` desplega automàticament
+- Temps de desplegament: ~2-3 minuts
+- Notificacions automàtiques de l'estat del desplegament
+- Rollback automàtic si el build falla
+
+---
+
+## 🏗️ Arquitectura tècnica del projecte
+
+### Stack tecnològic:
+- **Frontend**: React 18 + TypeScript + Vite
+- **Backend**: Spring Boot 3.4.5 (Fly.io)  
+- **Base de dades**: MariaDB
+- **Fitxers**: AWS S3 amb URLs signades
+- **Autenticació**: JWT tokens
+- **Deploy**: Vercel (frontend) + Fly.io (backend)
+
+### Estructura del repositori:
+```
+VALIDACIO-FACTURES/
+├── frontend/               # React app (Vercel)
+│   ├── src/
+│   │   ├── api/           # Client HTTP amb constants
+│   │   ├── pages/         # Pàgines de l'aplicació  
+│   │   ├── components/    # Components reutilitzables
+│   │   └── config/        # Configuració (constants.ts)
+│   ├── vercel.json        # Configuració de Vercel
+│   └── vite.config.ts     # Configuració de Vite
+├── backend/               # Spring Boot app (Fly.io)
+│   ├── src/main/java/
+│   ├── fly.toml          # Configuració de Fly.io
+│   └── Dockerfile        # Imatge Docker
+└── docs/                 # Documentació del projecte
+    └── instruccions/     # Guies de desplegament
+```
+
+---
+
+## 🚨 Resolució de problemes comuns
+
+### Build falla a Vercel:
+```bash
+# Verificar dependències localment
+cd frontend
 npm install
 
-# Probar el build localmente
+# Provar el build localment
 npm run build
 
-# Verificar variables de entorno
+# Verificar variables d'entorn a Vercel
 vercel env ls
+
+# Veure logs del darrer desplegament
+vercel logs
 ```
 
-### Error de CORS
-- Verificar que `VITE_API_BASE_URL` apunte al backend correcto
-- Comprobar que el backend acepta requests desde el dominio de Vercel
+### Error de CORS:
+- Verificar que el backend (Fly.io) està funcionant
+- Comprovar que `VITE_API_BASE_URL` està ben configurat
+- Revisar la configuració CORS al backend Spring Boot
 
-### Rutas no funcionan (404)
-- Verificar que `vercel.json` tiene la configuración de redirects
-- Comprobar que React Router está configurado correctamente
+### Rutes no funcionen (404):
+- Verificar que `vercel.json` té la configuració de redirects correcta
+- Comprovar que React Router està configurat correctament
+- Assegurar-se que les rutes estan ben definides
 
-### Variables de entorno no disponibles
+### Variables d'entorn no disponibles:
 ```bash
-# Las variables deben empezar por VITE_
+# Les variables han de començar per VITE_
 VITE_API_BASE_URL=https://validacio-backend.fly.dev/api
 
-# Acceso en el código:
+# Accés al codi:
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 ```
 
-## Workflow completo de desarrollo
+### Deploy no s'activa amb Git push:
+1. Verificar la connexió GitHub a Vercel Dashboard
+2. Comprovar que es fa push a la branca `main`
+3. Revisar els logs de webhook a Vercel
+4. Fer deploy manual com a alternativa: `vercel --prod`
 
-### 1. Desarrollo local:
+### Fitxers no es visualitzen:
+- Comprovar que el backend (Fly.io) està actiu
+- Verificar les URLs signades de S3
+- Revisar la configuració de permisos AWS S3
+
+---
+
+## 📝 Notes importants del desenvolupament
+
+### Variables d'entorn:
+- **Variables `VITE_`**: Disponibles al client (frontend)
+- **NO posar secrets** a variables del frontend
+- Variables sensibles van al backend (.env de Spring Boot)
+
+### Build automàtic:
+- Vercel detecta automàticament projectes Vite
+- Configuració automàtica de Node.js i dependències
+- Cache intel·ligent per builds més ràpids
+
+### Domini personalitzat:
+- Configurat: `validacio-factures.vercel.app`
+- Configurable a **Settings** → **Domains**
+
+### Redirects i SPA:
+- `vercel.json` configurat per React Router
+- Totes les rutes apunten a `index.html`
+- Gestió d'assets estàtics optimitzada
+
+### Integració amb backend:
+- URL hardcoded per evitar problemes d'entorn
+- Sistema híbrid per gestionar fitxers (S3 + proxy)
+- Autenticació JWT centralitzada
+
+---
+
+## 📈 Monitorització i logs
+
+### Vercel Dashboard:
+- **Overview**: Estat general del projecte
+- **Deployments**: Historial de desplegaments
+- **Functions**: (No utilitzem serverless functions)
+- **Analytics**: Estadístiques d'ús
+- **Settings**: Configuració del projecte
+
+### Logs importants:
 ```bash
-cd frontend
-npm run dev
-# La app se ejecuta en http://localhost:5173
+# Logs del darrer desplegament
+vercel logs
+
+# Logs en temps real (durant deploy)
+vercel logs --follow
+
+# Logs d'un desplegament específic
+vercel logs [DEPLOYMENT_ID]
 ```
 
-### 2. Actualizar y desplegar:
-```bash
-# Hacer cambios en el código
-git add .
-git commit -m "Actualizar frontend"
-git push
+### Mètriques clau:
+- **Build time**: ~30-60 segons
+- **Deploy time**: 2-3 minuts total
+- **Bundle size**: ~750KB (minificat i comprimit)
+- **Uptime**: 99.9% (garantit per Vercel)
 
-# Deploy manual (si no tienes auto-deploy configurado)
-vercel --prod
-```
+---
 
-### 3. Verificar deployment:
-- Acceder a la URL de producción
-- Verificar que la conexión con el backend funciona
-- Comprobar logs si hay errores
+## 🔄 Historial de canvis importants
+
+### Setembre 2025:
+- ✅ Implementat sistema híbrid per fitxers (CORS fix)
+- ✅ Connectat deploy automàtic amb GitHub
+- ✅ Centralitzades URLs del backend (constants.ts)
+- ✅ Optimitzada configuració de routing (vercel.json)
+- ✅ Solucionats problemes de visualització de documents
+
+### Funcionalitats implementades:
+- Sistema d'autenticació JWT
+- Gestió de factures, albarans i pressupostos
+- Visualització de documents (PDF/imatges) 
+- Matching automàtic factura-albarans
+- Gestió d'usuaris i permisos
+- Històric de canvis
+- Integració completa amb AWS S3
+
+### Arquitectura actual:
+- **Frontend**: React + TypeScript + Vite (Vercel)
+- **Backend**: Spring Boot + MariaDB (Fly.io)
+- **Storage**: AWS S3 amb URLs signades
+- **CI/CD**: GitHub Actions + Vercel + Fly.io
