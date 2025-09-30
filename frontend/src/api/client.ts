@@ -6,7 +6,7 @@ export const WEB_PLATFORM_VALUE = "WEB";
 
 // Instància d'Axios
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL, // p.ex. https://validacio-backend.fly.dev/api
+  baseURL: "https://validacio-backend.fly.dev/api", // URL hardcodejada temporalment
   // ❌ NO definim Content-Type global
 });
 
