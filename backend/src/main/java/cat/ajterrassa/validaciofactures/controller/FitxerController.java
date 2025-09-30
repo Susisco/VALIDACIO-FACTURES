@@ -5,12 +5,16 @@ import cat.ajterrassa.validaciofactures.service.AlbaraService;
 import cat.ajterrassa.validaciofactures.service.PressupostService;
 import cat.ajterrassa.validaciofactures.service.S3Service;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.file.*;
 import java.time.LocalDateTime;
 
@@ -108,6 +112,58 @@ public class FitxerController {
         return ResponseEntity.status(302)
                 .location(java.net.URI.create(url.toString()))
                 .build();
+    }
+
+    // ✅ NOVETAT: endpoint proxy per servir fitxers directament (evita CORS)
+    @GetMapping("/albara/{id}/download")
+    public ResponseEntity<byte[]> descarregarFitxerAlbara(@PathVariable Long id) {
+        try {
+            Albara albara = albaraService.findById(id);
+            String ruta = albara.getFitxerAdjunt();
+
+            if (ruta == null || ruta.isBlank()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Normalitza la clau d'S3
+            String s3Key = ruta.startsWith("/uploads/") ? ruta.substring("/uploads/".length()) : ruta;
+
+            // Obtenim URL signada temporal
+            URL url = s3Service.presignGetUrl(s3Key, java.time.Duration.ofSeconds(presignTtl));
+
+            // Fem la petició HTTP a S3 i retornem el contingut com a proxy
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(10000); // 10 segons
+            connection.setReadTimeout(30000);    // 30 segons
+
+            if (connection.getResponseCode() != 200) {
+                return ResponseEntity.status(connection.getResponseCode()).build();
+            }
+
+            // Llegim tot el contingut
+            try (InputStream inputStream = connection.getInputStream()) {
+                byte[] contingut = inputStream.readAllBytes();
+
+                // Determinem el tipus MIME
+                String mimeType = detectMimeType(ruta);
+                String fileName = ruta.substring(ruta.lastIndexOf('/') + 1);
+
+                // Configurem les capçaleres per la descàrrega
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.parseMediaType(mimeType));
+                headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileName + "\"");
+                headers.setContentLength(contingut.length);
+
+                return ResponseEntity.ok()
+                        .headers(headers)
+                        .body(contingut);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
     }
 
     
