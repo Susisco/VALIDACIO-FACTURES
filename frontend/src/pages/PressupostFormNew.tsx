@@ -20,6 +20,7 @@ import { useCreatePressupost } from "../api/pressupostos";
 import type { PressupostInput } from "../api/pressupostos";
 import { useEffect } from "react";
 import { CLIENT_PLATFORM_HEADER, WEB_PLATFORM_VALUE } from "../api/client";
+import { API_BASE_URL } from "../config/constants";
 
 export default function PressupostFormNew() {
   const navigate = useNavigate();
@@ -89,9 +90,7 @@ export default function PressupostFormNew() {
 
         try {
           await fetch(
-            `${import.meta.env.VITE_API_BASE_URL}/fitxers/pressupost/${
-              created.id
-            }`,
+            `${API_BASE_URL}/fitxers/pressupost/${created.id}`,
             {
               method: "POST",
               body: formData,

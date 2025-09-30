@@ -29,6 +29,7 @@ import { useDisclosure } from "@mantine/hooks";
 import HistoricCanvisModal from "../components/HistoricCanvisModal";
 import { useHistoricCanvis } from "../api/historic";
 import { openAlbaraFile } from "../api/fitxers";
+import { API_BASE_URL } from "../config/constants";
 
 // Camps editables del formulari
 interface FormValues {
@@ -60,9 +61,8 @@ export default function AlbaraFormEdit() {
   const [selectedProveidor, setSelectedProveidor] = useState<Proveidor | null>(
     null
   );
-  // API_BASE_URL és la URL base de l'API, definida a les variables d'entorn
-  //
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  
+  console.log("🔗 URL base per fitxers:", API_BASE_URL);
 
   /* --- React‑Hook‑Form --- */
   const {

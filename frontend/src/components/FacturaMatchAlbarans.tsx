@@ -32,11 +32,16 @@ export default function FacturaMatchAlbarans({ facturaId }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  console.log("🔧 Component FacturaMatchAlbarans carregat amb facturaId:", facturaId);
+  console.log("🌍 VITE_API_BASE_URL:", import.meta.env.VITE_API_BASE_URL);
+  console.log("🌐 URL hardcoded que usarem: https://validacio-backend.fly.dev/api");
+
   const fetchMatches = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const token = localStorage.getItem("token");
+      console.log("🔗 Carregant matches per factura:", facturaId);
       const res = await fetch(`https://validacio-backend.fly.dev/api/factures/${facturaId}/auto-relate`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -45,8 +50,10 @@ export default function FacturaMatchAlbarans({ facturaId }: Props) {
         },
       });
 
+      console.log("📡 Resposta matches:", res.status, res.statusText);
       if (!res.ok) throw new Error("Error carregant albarans relacionats");
       const data = await res.json();
+      console.log("📦 Dades matches rebudes:", data);
       setResultats(data.albaransAutoRelats);
     } catch (err) {
       if (err instanceof Error) {
@@ -62,6 +69,7 @@ export default function FacturaMatchAlbarans({ facturaId }: Props) {
   const fetchCandidats = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
+      console.log("🔍 Carregant candidats per factura:", facturaId);
       const res = await fetch(`https://validacio-backend.fly.dev/api/factures/${facturaId}/albarans-candidats`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -70,12 +78,15 @@ export default function FacturaMatchAlbarans({ facturaId }: Props) {
         },
       });
 
+      console.log("📡 Resposta candidats:", res.status, res.statusText);
       if (!res.ok)
         throw new Error("No s'han pogut carregar els albarans candidats");
       const data = await res.json();
+      console.log("📦 Dades candidats rebudes:", data);
       setCandidats(data);
     } catch (err) {
-      console.error(err);
+      console.error("❌ Error carregant candidats:", err);
+      setError("Error carregant candidats: " + (err instanceof Error ? err.message : "Error desconegut"));
     }
   }, [facturaId]);
 
@@ -200,7 +211,7 @@ export default function FacturaMatchAlbarans({ facturaId }: Props) {
       {candidats.length > 0 && (
         <Box mt="xl">
           <Title order={5} mb="sm">
-            📥 Tots els albarans del proveïdor disponibles
+            📥 Tots els albarans del proveïdor disponibles ({candidats.length})
           </Title>
           <Text size="sm" c="dimmed" mb="md">
             Aquests són tots els albarans del proveïdor que encara no estan assignats a cap factura.
@@ -280,6 +291,14 @@ export default function FacturaMatchAlbarans({ facturaId }: Props) {
               </tbody>
             </table>
           </Paper>
+        </Box>
+      )}
+
+      {candidats.length === 0 && !loading && (
+        <Box mt="xl">
+          <Text c="dimmed" ta="center" py="md">
+            📭 No hi ha albarans disponibles del proveïdor per relacionar
+          </Text>
         </Box>
       )}
     </Box>

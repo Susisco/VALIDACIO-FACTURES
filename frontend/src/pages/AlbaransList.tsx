@@ -15,6 +15,7 @@ import {
 import { IconChevronUp, IconChevronDown } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import { useAlbarans } from "../api/albarans";
+import { API_BASE_URL } from "../config/constants";
 
 // Minimal typing per Albarà
 interface Albara {
@@ -209,8 +210,7 @@ export default function AlbaransList() {
     );
 
 
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Base URL de l'API de la imatge
-
+  console.log("🔗 URL base per fitxers (AlbaransList):", API_BASE_URL);
 
   return (
     <Container style={{ fontFamily: "Poppins, sans-serif" }} py="xl">

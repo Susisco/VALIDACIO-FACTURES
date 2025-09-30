@@ -21,7 +21,7 @@ import {
   ActionIcon,
 } from "@mantine/core";
 import { Trash } from "tabler-icons-react";
-import FacturaMatchAlbarans from "./FacturaMatchAlbarans";
+import FacturaMatchAlbarans from "../components/FacturaMatchAlbarans";
 
 interface DetallDto extends DetallInput {
   albaraRelacionatId?: number;
