@@ -42,17 +42,24 @@ This document describes the migration from H2 in-memory database to MariaDB with
 
 ## Environment Setup
 
+⚠️ **IMPORTANT**: Els valors següents són **NOMÉS EXEMPLES**. NO utilitzis aquests valors en producció.
+
 ### Prerequisites
 1. **MariaDB Server** running on `localhost:3306`
-2. **Database**: `validacio_factures`
-3. **User**: `validacio_user` with password `ValidacioPass123!`
+2. **Database**: `your_database_name`
+3. **User**: `your_db_user` with password `YourSecurePassword123!`
 4. **AWS Credentials**: Set as environment variables:
-   - `AWS_ACCESS_KEY_ID`
-   - `AWS_SECRET_ACCESS_KEY`
+   - `AWS_ACCESS_KEY_ID=your_aws_access_key`
+   - `AWS_SECRET_ACCESS_KEY=your_aws_secret_key`
 
 ### S3 Buckets
-- **Development**: `validacio-factures-dev`
-- **Production**: `validacio-factures-uploads`
+- **Development**: `your-app-name-dev`
+- **Production**: `your-app-name-uploads`
+
+🔒 **SECURITY NOTE**: 
+- Canvia TOTS els passwords i credencials abans d'usar en producció
+- No committis mai credencials reals al repositori
+- Usa variables d'entorn per a dades sensibles
 
 ## Security Improvements
 - ✅ JWT authentication working correctly

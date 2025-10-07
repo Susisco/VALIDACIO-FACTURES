@@ -95,15 +95,26 @@ fly open
 
 ### 5. Variables de entorno
 
+⚠️ **IMPORTANT**: Els valors següents són **NOMÉS EXEMPLES**. Usa les teves credencials reals.
+
 ```bash
 # Configurar variables de entorno (base de datos, etc.)
-fly secrets set DATABASE_URL="jdbc:mariadb://host:port/database"
-fly secrets set DATABASE_USERNAME="usuario"
-fly secrets set DATABASE_PASSWORD="contraseña"
+fly secrets set DATABASE_URL="jdbc:mariadb://your-host:3306/your-database"
+fly secrets set DATABASE_USERNAME="your_db_user"  
+fly secrets set DATABASE_PASSWORD="YourSecurePassword123!"
+
+# AWS S3 (si utilitzes S3)
+fly secrets set AWS_ACCESS_KEY_ID="your_aws_access_key"
+fly secrets set AWS_SECRET_ACCESS_KEY="your_aws_secret_key"
 
 # Ver variables configuradas
 fly secrets list
 ```
+
+🔒 **SECURITY NOTES**:
+- NO utilitzis mai passwords d'exemple en producció
+- Genera passwords segurs i únics per cada entorn
+- Les credencials AWS han de tenir permisos mínims necessaris
 
 ### 6. URL de la aplicación
 
