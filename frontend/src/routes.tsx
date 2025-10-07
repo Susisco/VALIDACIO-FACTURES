@@ -9,6 +9,9 @@ import CanviContrasenyaObligatori from "./pages/CanviContrasenyaObligatori";
 //MAIN MENU
 import MainMenu from "./pages/MainMenu";
 
+// PÀGINES ESTÀTIQUES
+const PoliticaPrivadesa = lazy(() => import("./pages/PoliticaPrivadesa"));
+
 //FACTURES
 const FacturesListDetall = lazy(() => import("./pages/FacturesListDetall"));
 const FacturaFormNew = lazy(() => import("./pages/FacturaFormNew"));
@@ -69,6 +72,10 @@ const routesConfig: RouteObject[] = [
     ),
     children: [
       { index: true, element: <MainMenu /> },
+      {
+        path: "politica-privadesa",
+        element: <PoliticaPrivadesa />,
+      },
 
       // ALBARANS (tots els rols)
       {

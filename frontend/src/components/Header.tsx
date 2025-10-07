@@ -1,6 +1,6 @@
 // src/components/Header.tsx
 import React from "react";
-import { Title, ActionIcon, Tooltip } from "@mantine/core";
+import { Title, ActionIcon, Tooltip, Anchor } from "@mantine/core";
 import { Home, ArrowLeft, Logout, Login } from "tabler-icons-react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -82,11 +82,14 @@ const handleLogout = () => {
       </div>
 
       {/* Dreta: Login o Logout */}
-      <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
+      <div style={{ flex: 1, display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "16px" }}>
+        <Anchor component={Link} to="/politica-privadesa" size="sm" c="blue.7" style={{ fontWeight: 500 }}>
+          Política de privadesa
+        </Anchor>
         {/* Mostra el nom si està definit */}
         {nom && (
-          <span style={{ marginRight: "22px", fontWeight: 500, fontFamily: "Poppins, sans-serif",  paddingTop: "10px", color: "#1976D2",}}>
-            Usuari:, {nom}
+          <span style={{ fontWeight: 500, fontFamily: "Poppins, sans-serif", color: "#1976D2" }}>
+            Usuari: {nom}
           </span>
         )}
         {token ? (
