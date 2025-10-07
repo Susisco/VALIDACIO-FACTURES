@@ -1,5 +1,6 @@
 package cat.ajterrassa.validaciofactures.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,14 +9,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/config")
 public class AppConfigController {
 
+    @Value("${app.min.supported.version:1.0.0}")
+    private String minSupportedVersion;
+
+    @Value("${app.update.message:Actualitza l'aplicació per continuar utilitzant el servei.}")
+    private String updateMessage;
+
+    @Value("${app.update.url:https://play.google.com/store/apps/details?id=com.example.app}")
+    private String updateUrl;
+
+    // Mantenim aquesta constant per compatibilitat amb VersionCheckFilter
     public static final String MIN_SUPPORTED_VERSION = "1.0.0";
 
     @GetMapping("/app")
     public AppConfigResponse getAppConfig() {
         return new AppConfigResponse(
-                MIN_SUPPORTED_VERSION,
-                "Actualitza l'aplicació per continuar utilitzant el servei.",
-                "https://play.google.com/store/apps/details?id=com.example.app"
+                minSupportedVersion,
+                updateMessage,
+                updateUrl
         );
     }
 

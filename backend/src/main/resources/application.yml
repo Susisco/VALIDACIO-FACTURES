@@ -3,4 +3,6 @@ app:
     header-name: X-Client-Platform
     web-value: WEB
     android-value: ANDROID
-    trusted-web-origins: []
+    trusted-web-origins: 
+      - http://localhost:5173
+      - http://localhost:3000

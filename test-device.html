@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registrar Dispositiu de Prova</title>
+</head>
+<body>
+    <h1>Registrar Dispositiu de Prova</h1>
+    <button onclick="registerDevice()">Registrar Dispositiu test-device-001</button>
+    <button onclick="registerDevice2()">Registrar Dispositiu android-phone-001</button>
+    <button onclick="registerDevice3()">Registrar Dispositiu android-tablet-002</button>
+    <div id="result"></div>
+
+    <script>
+        async function registerDevice() {
+            try {
+                const response = await fetch('http://localhost:8080/api/devices/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-App-Version': '1.0.0'
+                    },
+                    body: JSON.stringify({
+                        fid: 'test-device-001'
+                    })
+                });
+                const data = await response.text();
+                document.getElementById('result').innerHTML += `<p>✅ Dispositiu test-device-001: ${data}</p>`;
+            } catch (error) {
+                document.getElementById('result').innerHTML += `<p>❌ Error: ${error}</p>`;
+            }
+        }
+
+        async function registerDevice2() {
+            try {
+                const response = await fetch('http://localhost:8080/api/devices/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-App-Version': '1.1.0'
+                    },
+                    body: JSON.stringify({
+                        fid: 'android-phone-001'
+                    })
+                });
+                const data = await response.text();
+                document.getElementById('result').innerHTML += `<p>✅ Dispositiu android-phone-001: ${data}</p>`;
+            } catch (error) {
+                document.getElementById('result').innerHTML += `<p>❌ Error: ${error}</p>`;
+            }
+        }
+
+        async function registerDevice3() {
+            try {
+                const response = await fetch('http://localhost:8080/api/devices/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-App-Version': '0.9.0'
+                    },
+                    body: JSON.stringify({
+                        fid: 'android-tablet-002'
+                    })
+                });
+                const data = await response.text();
+                document.getElementById('result').innerHTML += `<p>✅ Dispositiu android-tablet-002: ${data}</p>`;
+            } catch (error) {
+                document.getElementById('result').innerHTML += `<p>❌ Error: ${error}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

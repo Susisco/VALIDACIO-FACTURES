@@ -11,6 +11,7 @@ export default function MainMenu() {
   const potVeureAlbarans = rol === "ADMINISTRADOR" || rol === "GESTOR" || rol === "TREBALLADOR";
   const potVeureUsuaris = rol === "ADMINISTRADOR";
   const potVeureProveidors = rol === "ADMINISTRADOR" || rol === "GESTOR";
+  const potGestionarDispositius = rol === "ADMINISTRADOR";
 
   // Estils comuns
   const buttonStyle = {
@@ -108,6 +109,23 @@ export default function MainMenu() {
                   disabled={!potVeureProveidors}
                 >
                   PROVEÏDORS
+                </Button>
+              </Tooltip>
+            </Grid.Col>
+
+            <Grid.Col span={12} style={{ marginBottom: "16px", display: "flex", justifyContent: "center" }}>
+              <Tooltip
+                label="Només accessible per a ADMINISTRADOR - Gestió de dispositius mòbils autoritzats"
+                disabled={potGestionarDispositius}
+              >
+                <Button
+                  onClick={() => navigate("/devices")}
+                  style={potGestionarDispositius ? buttonStyle : disabledButtonStyle}
+                  radius="md"
+                  size="md"
+                  disabled={!potGestionarDispositius}
+                >
+                  DISPOSITIUS
                 </Button>
               </Tooltip>
             </Grid.Col>

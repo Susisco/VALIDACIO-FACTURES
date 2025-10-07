@@ -6,7 +6,7 @@ export const WEB_PLATFORM_VALUE = "WEB";
 
 // Instància d'Axios
 export const api = axios.create({
-  baseURL: "https://validacio-backend.fly.dev/api", // URL hardcodejada temporalment
+  baseURL: "http://localhost:8080/api", // Backend local per desenvolupament
   // ❌ NO definim Content-Type global
 });
 
