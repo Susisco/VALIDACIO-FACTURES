@@ -47,7 +47,7 @@ public class PlayIntegrityFilter extends OncePerRequestFilter {
             return;
         }
         String integrityToken = request.getHeader(INTEGRITY_HEADER);
-        if (integrityToken == null || !playIntegrityService.validateToken(integrityToken)) {
+        if (!playIntegrityService.validateToken(integrityToken)) {
             logger.warn("Rejected request to {} due to invalid Play Integrity token", request.getRequestURI());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
