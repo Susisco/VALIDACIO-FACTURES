@@ -4,11 +4,33 @@ import axios from "axios";
 export const CLIENT_PLATFORM_HEADER = "X-Client-Platform";
 export const WEB_PLATFORM_VALUE = "WEB";
 
+// Configuració dinàmica segons entorn
+const getBaseURL = (): string => {
+  // 1. Prioritat màxima: Variable d'entorn explícita
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+  
+  // 2. Fallback segons entorn de desenvolupament
+  if (import.meta.env.DEV) {
+    return "http://localhost:8080/api"; // Desenvolupament local
+  }
+  
+  // 3. Fallback per producció
+  return "https://validacio-backend.fly.dev/api"; // Producció
+};
+
 // Instància d'Axios
 export const api = axios.create({
-  baseURL: "http://localhost:8080/api", // Backend local per desenvolupament
+  baseURL: getBaseURL(),
   // ❌ NO definim Content-Type global
 });
+
+// Debug: Mostrar configuració actual (només en desenvolupament)
+if (import.meta.env.DEV) {
+  console.log(`🔗 API Base URL: ${getBaseURL()}`);
+  console.log(`🌍 Environment: ${import.meta.env.MODE}`);
+}
 
 // ✅ Interceptor de petició — afegeix plataforma i token
 api.interceptors.request.use((config) => {
