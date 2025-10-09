@@ -28,9 +28,8 @@ public class DeviceAuthorizationFilter extends OncePerRequestFilter {
     private static final Set<String> EXCLUDED_PATHS = Set.of(
             "/api/auth",
             "/api/devices/register",
-            "/api/devices/associate-user", // ⭐ AFEGIT: associació usuari-dispositiu
+            "/api/devices/associate-user",
             "/api/fitxers",
-            "/api", // TEMPORALMENT EXCLOURE TOTS ELS ENDPOINTS
             "/config",
             "/ping"
     );

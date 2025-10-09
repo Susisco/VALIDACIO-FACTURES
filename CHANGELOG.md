@@ -13,6 +13,25 @@ i aquest projecte segueix [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ---
 
+## [1.2.1] - 2025-10-09 🛡️ SECURITY FIX
+
+### Security
+- **🚨 CRÍTICO: Vulnerabilitat de seguretat resolta** en DeviceAuthorizationFilter
+- **🔒 Eliminada exclusió genèrica** `/api` que permetia bypass d'autorització
+- **✅ Dispositius no aprovats** ara són bloquejats correctament (403 Forbidden)
+- **🧪 Tests de seguretat actualitzats** per validar el fix implementat
+
+### Fixed
+- DeviceAuthorizationFilter ara bloqueja correctament dispositius no autoritzats
+- Tests de seguretat passen tots després del fix aplicat
+- Documentació de seguretat actualitzada amb detalls del fix
+
+### Documentation
+- [Informe complet del fix de seguretat](docs/seguretat/SECURITY_FIX_VULNERABILITAT_DEVICE_AUTHORIZATION.md)
+- README actualitzat amb informació de seguretat
+
+---
+
 ## [1.2.0] - 2025-10-09 🎉
 
 ### Added

@@ -59,12 +59,20 @@ class DeviceRegistrationControllerSecurityTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMINISTRADOR"})
     void listDevicesAccessibleForAdministrators() throws Exception {
+        // Mock dispositiu aprovat per passar DeviceAuthorizationFilter
+        when(deviceRegistrationRepository.findByFid("test-approved-device"))
+                .thenReturn(Optional.of(DeviceRegistration.builder()
+                        .fid("test-approved-device")
+                        .status(DeviceRegistrationStatus.APPROVED)
+                        .build()));
+        
         when(deviceRegistrationRepository.findAll()).thenReturn(List.of(DeviceRegistration.builder()
                 .fid("fid-1")
                 .status(DeviceRegistrationStatus.PENDING)
                 .build()));
 
-        mockMvc.perform(get("/api/admin/devices"))
+        mockMvc.perform(get("/api/admin/devices")
+                .header("X-Firebase-Installation-Id", "test-approved-device"))
                 .andExpect(status().isOk());
 
         verify(deviceRegistrationRepository).findAll();
@@ -82,13 +90,21 @@ class DeviceRegistrationControllerSecurityTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMINISTRADOR"})
     void approveDeviceAllowedForAdministrators() throws Exception {
+        // Mock dispositiu aprovat per passar DeviceAuthorizationFilter
+        when(deviceRegistrationRepository.findByFid("test-approved-device"))
+                .thenReturn(Optional.of(DeviceRegistration.builder()
+                        .fid("test-approved-device")
+                        .status(DeviceRegistrationStatus.APPROVED)
+                        .build()));
+        
         DeviceRegistration registration = DeviceRegistration.builder()
                 .fid("fid-approve")
                 .status(DeviceRegistrationStatus.PENDING)
                 .build();
         when(deviceRegistrationRepository.findByFid("fid-approve")).thenReturn(Optional.of(registration));
 
-        mockMvc.perform(post("/api/admin/devices/{fid}/approve", "fid-approve"))
+        mockMvc.perform(post("/api/admin/devices/{fid}/approve", "fid-approve")
+                .header("X-Firebase-Installation-Id", "test-approved-device"))
                 .andExpect(status().isOk());
 
         verify(deviceRegistrationRepository).save(registration);
@@ -106,13 +122,21 @@ class DeviceRegistrationControllerSecurityTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMINISTRADOR"})
     void revokeDeviceAllowedForAdministrators() throws Exception {
+        // Mock dispositiu aprovat per passar DeviceAuthorizationFilter
+        when(deviceRegistrationRepository.findByFid("test-approved-device"))
+                .thenReturn(Optional.of(DeviceRegistration.builder()
+                        .fid("test-approved-device")
+                        .status(DeviceRegistrationStatus.APPROVED)
+                        .build()));
+        
         DeviceRegistration registration = DeviceRegistration.builder()
                 .fid("fid-revoke")
                 .status(DeviceRegistrationStatus.PENDING)
                 .build();
         when(deviceRegistrationRepository.findByFid("fid-revoke")).thenReturn(Optional.of(registration));
 
-        mockMvc.perform(post("/api/admin/devices/{fid}/revoke", "fid-revoke"))
+        mockMvc.perform(post("/api/admin/devices/{fid}/revoke", "fid-revoke")
+                .header("X-Firebase-Installation-Id", "test-approved-device"))
                 .andExpect(status().isOk());
 
         verify(deviceRegistrationRepository).save(registration);
