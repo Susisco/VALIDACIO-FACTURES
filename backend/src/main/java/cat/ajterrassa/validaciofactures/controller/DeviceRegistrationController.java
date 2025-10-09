@@ -7,12 +7,14 @@ import cat.ajterrassa.validaciofactures.repository.DeviceRegistrationRepository.
 import cat.ajterrassa.validaciofactures.repository.UsuariRepository;
 import cat.ajterrassa.validaciofactures.model.Usuari;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -26,24 +28,45 @@ public class DeviceRegistrationController {
 
     @PostMapping("/devices/register")
     public ResponseEntity<?> registerDevice(@RequestBody FidRequest request,
-                                            @RequestHeader(value = "X-App-Version", required = false) String appVersion,
-                                            Principal principal) {
-        Long userId = null;
-        if (principal != null) {
-            Usuari user = usuariRepository.findByEmail(principal.getName()).orElse(null);
-            if (user != null) {
-                userId = user.getId();
-            }
-        }
+                                            @RequestHeader(value = "X-App-Version", required = false) String appVersion) {
+        // Registre inicial del dispositiu sense usuari (anònim)
         DeviceRegistration registration = deviceRepository.findByFid(request.getFid())
                 .orElse(DeviceRegistration.builder()
                         .fid(request.getFid())
                         .status(DeviceRegistrationStatus.PENDING)
                         .build());
-        registration.setUserId(userId);
-        registration.setAppVersion(appVersion);
+        
+        // Actualitzar app version si es proporciona
+        if (appVersion != null) {
+            registration.setAppVersion(appVersion);
+        }
+        
         deviceRepository.save(registration);
         return ResponseEntity.ok(registration.getStatus());
+    }
+
+    @PostMapping("/devices/associate-user")
+    public ResponseEntity<?> associateUserToDevice(@RequestBody FidRequest request,
+                                                   @RequestHeader(value = "X-App-Version", required = false) String appVersion,
+                                                   Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
+
+        Usuari user = usuariRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        DeviceRegistration registration = deviceRepository.findByFid(request.getFid())
+                .orElseThrow(() -> new RuntimeException("Device not registered"));
+
+        // Associar usuari al dispositiu
+        registration.setUserId(user.getId());
+        if (appVersion != null) {
+            registration.setAppVersion(appVersion);
+        }
+        
+        deviceRepository.save(registration);
+        return ResponseEntity.ok(Map.of("message", "Device associated with user successfully"));
     }
 
     @GetMapping("/devices/versions")
