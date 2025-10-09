@@ -18,6 +18,9 @@ public class AppConfigController {
     @Value("${app.update.url:https://play.google.com/store/apps/details?id=com.example.app}")
     private String updateUrl;
 
+    @Value("${play.integrity.cloud.project.number:1013719707047}")
+    private Long playIntegrityCloudProjectNumber;
+
     // Mantenim aquesta constant per compatibilitat amb VersionCheckFilter
     public static final String MIN_SUPPORTED_VERSION = "1.0.0";
 
@@ -26,7 +29,8 @@ public class AppConfigController {
         return new AppConfigResponse(
                 minSupportedVersion,
                 updateMessage,
-                updateUrl
+                updateUrl,
+                playIntegrityCloudProjectNumber
         );
     }
 
@@ -34,11 +38,13 @@ public class AppConfigController {
         private final String minSupportedVersion;
         private final String message;
         private final String updateUrl;
+        private final Long playIntegrityCloudProjectNumber;
 
-        public AppConfigResponse(String minSupportedVersion, String message, String updateUrl) {
+        public AppConfigResponse(String minSupportedVersion, String message, String updateUrl, Long playIntegrityCloudProjectNumber) {
             this.minSupportedVersion = minSupportedVersion;
             this.message = message;
             this.updateUrl = updateUrl;
+            this.playIntegrityCloudProjectNumber = playIntegrityCloudProjectNumber;
         }
 
         public String getMinSupportedVersion() {
@@ -51,6 +57,10 @@ public class AppConfigController {
 
         public String getUpdateUrl() {
             return updateUrl;
+        }
+
+        public Long getPlayIntegrityCloudProjectNumber() {
+            return playIntegrityCloudProjectNumber;
         }
     }
 }
