@@ -53,12 +53,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                 // --- Rutas públicas ---
                 .requestMatchers("/ping").permitAll()
+                .requestMatchers("/config/**").permitAll() // ⭐ TEMPORALMENT: permetre /config
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/devices/register").permitAll() // ⭐ AFEGIT: registre de dispositius
                 .requestMatchers("/api/test/**").permitAll()
                 // ✅ Fitxers: només autenticats (o restringeix per rol)
                 //.requestMatchers(HttpMethod.GET, "/api/fitxers/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/api/fitxers/**").permitAll()
+                // --- Rutas protegidas: Dispositius ---
+                .requestMatchers("/api/devices/associate-user").authenticated() // Associar usuari amb dispositiu
                 // --- Rutas protegidas: Albarans ---
                 .requestMatchers(HttpMethod.POST, "/api/albarans/app/save-with-file").authenticated() // Guardar albarans desde la app
                 .requestMatchers(HttpMethod.POST, "/api/albarans/save-with-file").authenticated() // Guardar albarans desde el frontend

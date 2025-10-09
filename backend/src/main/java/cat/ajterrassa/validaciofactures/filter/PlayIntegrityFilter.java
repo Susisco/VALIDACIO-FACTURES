@@ -25,8 +25,10 @@ public class PlayIntegrityFilter extends OncePerRequestFilter {
     private static final Set<String> EXCLUDED_PATHS = Set.of(
             "/api/auth",
             "/api/devices/register",
+            "/api/devices/associate-user",
             "/config",
-            "/ping"
+            "/ping",
+            "/debug"
     );
 
     private final PlayIntegrityService playIntegrityService;
@@ -54,6 +56,7 @@ public class PlayIntegrityFilter extends OncePerRequestFilter {
             response.getWriter().write("{\"error\":\"INVALID_PLAY_INTEGRITY_TOKEN\"}");
             return;
         }
+        logger.debug("Play Integrity validation passed for {}", request.getRequestURI());
         filterChain.doFilter(request, response);
     }
 

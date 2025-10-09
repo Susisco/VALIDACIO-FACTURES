@@ -35,6 +35,7 @@ public class VersionCheckFilter extends OncePerRequestFilter {
             response.getWriter().write("{\"error\":\"VERSION_TOO_OLD\",\"minVersion\":\"" + minSupportedVersion + "\"}");
             return;
         }
+        logger.debug("Version check passed for {} with version {}", request.getRequestURI(), clientVersion);
         filterChain.doFilter(request, response);
     }
 

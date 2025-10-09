@@ -43,6 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
         boolean isPublicRoute = (
             (method.equals("POST") && path.equals("/api/albarans")) ||
             (method.equals("POST") && path.equals("/api/albarans/frontend")) ||
+            (method.equals("POST") && path.equals("/api/devices/register")) || // ⭐ AFEGIT: registre de dispositius
             path.equals("/api/auth/login") ||  // ❗ login és públic
             (method.equals("GET") && path.startsWith("/api/fitxers/"))  // ❗ fitxers són públics per GET
         );
