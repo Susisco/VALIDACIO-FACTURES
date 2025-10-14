@@ -54,14 +54,15 @@ Aquest document descriu el procés complet per crear, compilar i publicar una no
 - [ ] **3.4** Verificar endpoints crítics funcionant
 - [ ] **3.5** Comprovar logs del servidor
 
-### **📤 FASE 4: PUBLICACIÓ PLAY CONSOLE**
+### **📤 FASE 4: PUBLICACIÓ A PLAY CONSOLE**
 - [ ] **4.1** Accedir a Google Play Console
 - [ ] **4.2** Crear nova versió (track adequat)
 - [ ] **4.3** Pujar AAB i verificar upload
 - [ ] **4.4** Afegir notes de versió (format `<ca>`)
 - [ ] **4.5** Revisar i corregir errors de validació
 - [ ] **4.6** Publicar a track de testing
-- [ ] **4.7** Promocionar a producció (quan estigui validat)
+- [ ] **4.7** **ACTUALITZAR VERSIÓ MÍNIMA AL BACKEND** (`MIN_SUPPORTED_VERSION`)
+- [ ] **4.8** Promocionar a producció (quan estigui validat)
 
 ### **✅ FASE 5: VERIFICACIÓ POST-RELEASE**
 - [ ] **5.1** Confirmar disponibilitat de la versió
@@ -226,6 +227,39 @@ Actualització recomanada per a tots els usuaris.
 1. Clica **Desa** per guardar l'esborrany
 2. Clica **Revisa la versió** per validar
 3. Clica **Inicia el llançament** per publicar
+
+### **4.7 CONTROL DE VERSIONS MÍNIMES AL BACKEND**
+
+**⚠️ PAS CRÍTIC**: Després de publicar una nova versió amb correccions importants, has d'actualitzar la versió mínima al backend per forçar l'actualització dels usuaris.
+
+#### **Verificar Versió Mínima Actual**
+
+```powershell
+Invoke-WebRequest -Uri "https://validacio-backend.fly.dev/config/app" | Select-Object -ExpandProperty Content
+```
+
+#### **Actualitzar Versió Mínima**
+
+```powershell
+# Actualitzar variable d'entorn
+fly secrets set MIN_SUPPORTED_VERSION=1.2.5
+
+# Verificar que s'ha actualitzat
+fly secrets list
+```
+
+#### **Com Funciona el Sistema**
+
+1. **Android App**: Envia header `X-App-Version` en cada petició
+2. **Backend**: `VersionCheckFilter` comprova si la versió és >= `MIN_SUPPORTED_VERSION`
+3. **Si és antiga**: Retorna error 426 "UPGRADE_REQUIRED"
+4. **Si és nova**: Permet l'accés normal
+
+#### **Quan Actualitzar la Versió Mínima**
+
+- ✅ **Sempre**: Quan la nova versió corregeix errors crítics de seguretat
+- ✅ **Recomanat**: Quan hi ha millores importants d'estabilitat
+- ❌ **Evitar**: Per canvis menors o cosmètics
 
 ---
 

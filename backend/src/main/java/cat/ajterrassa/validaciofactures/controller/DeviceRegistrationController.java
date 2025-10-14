@@ -115,4 +115,119 @@ public class DeviceRegistrationController {
             this.fid = fid;
         }
     }
+
+    // DTO per resposta d'estat del dispositiu
+    public static class DeviceStatusResponse {
+        private String status;
+        private String message;
+        private boolean canLogin;
+
+        public DeviceStatusResponse(String status, String message, boolean canLogin) {
+            this.status = status;
+            this.message = message;
+            this.canLogin = canLogin;
+        }
+
+        // Getters
+        public String getStatus() { return status; }
+        public String getMessage() { return message; }
+        public boolean isCanLogin() { return canLogin; }
+    }
+
+    @GetMapping("/devices/status")
+    public ResponseEntity<DeviceStatusResponse> getDeviceStatus(
+            @RequestHeader(value = "X-Firebase-Installation-Id", required = true) String fid) {
+        
+        DeviceRegistration registration = deviceRepository.findByFid(fid).orElse(null);
+        
+        if (registration == null) {
+            return ResponseEntity.ok(new DeviceStatusResponse(
+                "NOT_REGISTERED",
+                "Dispositiu no registrat. Registrant automàticament...",
+                false
+            ));
+        }
+        
+        DeviceRegistrationStatus status = registration.getStatus();
+        if (status == DeviceRegistrationStatus.PENDING) {
+            return ResponseEntity.ok(new DeviceStatusResponse(
+                "PENDING",
+                "El teu dispositiu està pendent d'aprovació per part dels administradors. Si us plau, contacta amb l'administrador del sistema.",
+                false
+            ));
+        } else if (status == DeviceRegistrationStatus.APPROVED) {
+            return ResponseEntity.ok(new DeviceStatusResponse(
+                "APPROVED",
+                "Dispositiu aprovat. Pots fer login.",
+                true
+            ));
+        } else if (status == DeviceRegistrationStatus.REVOKED) {
+            return ResponseEntity.ok(new DeviceStatusResponse(
+                "REVOKED",
+                "El teu dispositiu ha estat revocat pels administradors. Si us plau, contacta amb l'administrador del sistema.",
+                false
+            ));
+        } else {
+            return ResponseEntity.ok(new DeviceStatusResponse(
+                "UNKNOWN",
+                "Estat del dispositiu desconegut.",
+                false
+            ));
+        }
+    }
+
+    // DTO per informació completa del dispositiu (per Settings)
+    public static class DeviceInfoResponse {
+        private String fid;
+        private String status;
+        private String appVersion;
+        private String associatedUser;
+        private java.time.LocalDateTime registrationDate;
+
+        public DeviceInfoResponse(String fid, String status, String appVersion, 
+                                 String associatedUser, java.time.LocalDateTime registrationDate) {
+            this.fid = fid;
+            this.status = status;
+            this.appVersion = appVersion;
+            this.associatedUser = associatedUser;
+            this.registrationDate = registrationDate;
+        }
+
+        // Getters
+        public String getFid() { return fid; }
+        public String getStatus() { return status; }
+        public String getAppVersion() { return appVersion; }
+        public String getAssociatedUser() { return associatedUser; }
+        public java.time.LocalDateTime getRegistrationDate() { return registrationDate; }
+    }
+
+    @GetMapping("/devices/my-info")
+    public ResponseEntity<DeviceInfoResponse> getMyDeviceInfo(
+            @RequestHeader(value = "X-Firebase-Installation-Id", required = true) String fid) {
+        
+        DeviceRegistration registration = deviceRepository.findByFid(fid).orElse(null);
+        
+        if (registration == null) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        String associatedUser = null;
+        if (registration.getUserId() != null) {
+            // Obtenir usuari per ID
+            Usuari usuari = usuariRepository.findById(registration.getUserId()).orElse(null);
+            if (usuari != null) {
+                associatedUser = usuari.getEmail();
+            }
+        }
+        
+        DeviceInfoResponse response = new DeviceInfoResponse(
+            registration.getFid(),
+            registration.getStatus().name(),
+            registration.getAppVersion(),
+            associatedUser,
+            null // Temporalment null fins que afegim timestamps al model
+        );
+        
+        return ResponseEntity.ok(response);
+    }
 }

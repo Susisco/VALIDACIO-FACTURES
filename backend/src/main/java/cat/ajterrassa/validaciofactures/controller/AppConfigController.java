@@ -21,6 +21,9 @@ public class AppConfigController {
     @Value("${play.integrity.cloud.project.number:1013719707047}")
     private Long playIntegrityCloudProjectNumber;
 
+    @Value("${app.version:1.0.0}")
+    private String backendVersion;
+
     // Mantenim aquesta constant per compatibilitat amb VersionCheckFilter
     public static final String MIN_SUPPORTED_VERSION = "1.0.0";
 
@@ -30,7 +33,8 @@ public class AppConfigController {
                 minSupportedVersion,
                 updateMessage,
                 updateUrl,
-                playIntegrityCloudProjectNumber
+                playIntegrityCloudProjectNumber,
+                backendVersion
         );
     }
 
@@ -39,12 +43,15 @@ public class AppConfigController {
         private final String message;
         private final String updateUrl;
         private final Long playIntegrityCloudProjectNumber;
+        private final String backendVersion;
 
-        public AppConfigResponse(String minSupportedVersion, String message, String updateUrl, Long playIntegrityCloudProjectNumber) {
+        public AppConfigResponse(String minSupportedVersion, String message, String updateUrl, 
+                               Long playIntegrityCloudProjectNumber, String backendVersion) {
             this.minSupportedVersion = minSupportedVersion;
             this.message = message;
             this.updateUrl = updateUrl;
             this.playIntegrityCloudProjectNumber = playIntegrityCloudProjectNumber;
+            this.backendVersion = backendVersion;
         }
 
         public String getMinSupportedVersion() {
@@ -61,6 +68,10 @@ public class AppConfigController {
 
         public Long getPlayIntegrityCloudProjectNumber() {
             return playIntegrityCloudProjectNumber;
+        }
+
+        public String getBackendVersion() {
+            return backendVersion;
         }
     }
 }

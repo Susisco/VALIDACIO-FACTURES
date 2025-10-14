@@ -26,9 +26,9 @@ public class DeviceAuthorizationFilter extends OncePerRequestFilter {
     private static final String FID_HEADER = "X-Firebase-Installation-Id";
 
     private static final Set<String> EXCLUDED_PATHS = Set.of(
-            "/api/auth",
             "/api/devices/register",
             "/api/devices/associate-user",
+            "/api/devices/status", // Nou endpoint per verificar estat dispositiu
             "/api/fitxers",
             "/config",
             "/ping"
