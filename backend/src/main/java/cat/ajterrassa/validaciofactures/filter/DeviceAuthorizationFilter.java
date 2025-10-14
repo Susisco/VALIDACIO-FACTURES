@@ -1,5 +1,16 @@
 package cat.ajterrassa.validaciofactures.filter;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import cat.ajterrassa.validaciofactures.config.ClientPlatformProperties;
 import cat.ajterrassa.validaciofactures.model.DeviceRegistration;
 import cat.ajterrassa.validaciofactures.model.DeviceRegistrationStatus;
@@ -8,16 +19,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.core.annotation.Order;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @Order(2) // DeviceAuthorizationFilter debe ejecutarse después de PlayIntegrityFilter
