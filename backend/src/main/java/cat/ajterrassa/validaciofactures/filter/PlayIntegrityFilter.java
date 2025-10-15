@@ -25,6 +25,7 @@ public class PlayIntegrityFilter extends OncePerRequestFilter {
     private static final Set<String> EXCLUDED_PATHS = Set.of(
             "/api/auth",
             "/api/devices/register",
+            "/api/devices/status",
             "/api/devices/associate-user",
             "/config",
             "/ping",

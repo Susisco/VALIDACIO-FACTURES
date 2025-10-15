@@ -57,6 +57,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/devices/register").permitAll() // ⭐ AFEGIT: registre de dispositius
+                .requestMatchers("/api/devices/status").permitAll() // ⭐ AFEGIT: verificació estat dispositiu
                 .requestMatchers("/api/test/**").permitAll()
                 // ✅ Fitxers: només autenticats (o restringeix per rol)
                 //.requestMatchers(HttpMethod.GET, "/api/fitxers/**").authenticated()

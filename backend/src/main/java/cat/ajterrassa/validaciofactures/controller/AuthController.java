@@ -5,6 +5,8 @@ import cat.ajterrassa.validaciofactures.dto.LoginResponse;
 import cat.ajterrassa.validaciofactures.security.JwtUtil;
 import cat.ajterrassa.validaciofactures.model.Usuari;
 import cat.ajterrassa.validaciofactures.repository.UsuariRepository;
+import cat.ajterrassa.validaciofactures.model.DeviceRegistration;
+import cat.ajterrassa.validaciofactures.repository.DeviceRegistrationRepository;
 
 import java.security.Principal;
 
@@ -34,8 +36,13 @@ public class AuthController {
     @Autowired
     private UsuariRepository usuariRepository;
 
+    @Autowired
+    private DeviceRegistrationRepository deviceRepository;
+
 @PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+public ResponseEntity<?> login(@RequestBody LoginRequest request,
+                              @RequestHeader(value = "X-Firebase-Installation-Id", required = false) String fid,
+                              @RequestHeader(value = "X-App-Version", required = false) String appVersion) {
         logger.info("Intentant login amb email: {}", request.getEmail());  // <--- Afegeix això
     try {
         Authentication auth = authManager.authenticate(
@@ -46,6 +53,11 @@ public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         String token = jwtUtil.generateToken(auth.getName());
 
         logger.info("Token generat per a {}: {}", request.getEmail(), token);
+
+        // ⭐ NOVA FUNCIONALITAT: Associar dispositiu amb usuari si és necessari
+        if (fid != null && !fid.trim().isEmpty()) {
+            associateDeviceWithUser(fid, usuari.getId(), appVersion);
+        }
 
         // Crea una resposta que inclou token, nom, id i contrasenyaTemporal
         LoginResponse response = new LoginResponse(
@@ -85,6 +97,41 @@ public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest reque
     usuariRepository.save(usuari);
 
     return ResponseEntity.ok("Contrasenya canviada correctament");
+}
+
+/**
+ * Mètode auxiliar per associar un dispositiu amb un usuari durant el login
+ */
+private void associateDeviceWithUser(String fid, Long userId, String appVersion) {
+    try {
+        DeviceRegistration registration = deviceRepository.findByFid(fid).orElse(null);
+        
+        if (registration == null) {
+            logger.info("Dispositiu {} no registrat. S'ignorarà l'associació.", fid);
+            return;
+        }
+        
+        // Si el dispositiu ja té un usuari associat, no el canviem
+        if (registration.getUserId() != null) {
+            if (!registration.getUserId().equals(userId)) {
+                logger.warn("Dispositiu {} ja està associat amb un altre usuari ({}). No es canviarà.", fid, registration.getUserId());
+            }
+            return;
+        }
+        
+        // Associar l'usuari al dispositiu
+        registration.setUserId(userId);
+        if (appVersion != null) {
+            registration.setAppVersion(appVersion);
+        }
+        
+        deviceRepository.save(registration);
+        logger.info("Dispositiu {} associat amb usuari {} correctament.", fid, userId);
+        
+    } catch (Exception e) {
+        logger.error("Error associant dispositiu {} amb usuari {}: {}", fid, userId, e.getMessage());
+        // No llençem l'error perquè el login ha de continuar encara que falli l'associació
+    }
 }
 
 }
