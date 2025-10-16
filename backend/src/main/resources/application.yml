@@ -6,3 +6,10 @@ app:
     trusted-web-origins: 
       - http://localhost:5173
       - http://localhost:3000
+
+devices:
+  retention:
+    archiveAfterDays: 90
+    deleteAfterDays: 365
+  cleanup:
+    cron: "0 30 3 * * *"

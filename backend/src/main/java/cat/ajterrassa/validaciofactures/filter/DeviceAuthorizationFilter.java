@@ -15,6 +15,7 @@ import cat.ajterrassa.validaciofactures.config.ClientPlatformProperties;
 import cat.ajterrassa.validaciofactures.model.DeviceRegistration;
 import cat.ajterrassa.validaciofactures.model.DeviceRegistrationStatus;
 import cat.ajterrassa.validaciofactures.repository.DeviceRegistrationRepository;
+import java.time.LocalDateTime;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -63,6 +64,9 @@ public class DeviceAuthorizationFilter extends OncePerRequestFilter {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             return;
         }
+        // Marquem activitat del dispositiu aprovat
+        registration.setLastSeenAt(LocalDateTime.now());
+        deviceRepository.save(registration);
         filterChain.doFilter(request, response);
     }
 

@@ -13,6 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +46,8 @@ public class DeviceRegistrationController {
         if (appVersion != null) {
             registration.setAppVersion(appVersion);
         }
+        // Marquem darrera activitat en registre
+        registration.setLastSeenAt(LocalDateTime.now());
         
         deviceRepository.save(registration);
         System.out.println("💾 Device saved with status: " + registration.getStatus());
@@ -69,6 +73,7 @@ public class DeviceRegistrationController {
         if (appVersion != null) {
             registration.setAppVersion(appVersion);
         }
+        registration.setLastSeenAt(LocalDateTime.now());
         
         deviceRepository.save(registration);
         return ResponseEntity.ok(Map.of("message", "Device associated with user successfully"));
@@ -173,28 +178,37 @@ public class DeviceRegistrationController {
                     .fid(fid)
                     .status(DeviceRegistrationStatus.PENDING)
                     .build();
-            deviceRepository.save(registration);
+            registration.setLastSeenAt(LocalDateTime.now());
+            deviceRepository.saveAndFlush(registration);
 
             System.out.println("💾 Created device with status PENDING for FID: " + fid);
+            String createdAtStr = registration.getCreatedAt() != null
+                    ? registration.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                    : null;
             return ResponseEntity.ok(new DeviceStatusResponse(
                 "PENDING",
                 "Dispositiu registrat i pendent d'aprovació.",
                 false,
                 fid,
                 "Dispositiu Android",
-                "Acabat d'instal·lar"
+                createdAtStr
             ));
         }
         
         System.out.println("✅ Registration found - Status: " + registration.getStatus() + 
                           ", UserID: " + registration.getUserId() + 
                           ", AppVersion: " + registration.getAppVersion());
+        // Marquem darrera activitat quan consulta status
+        registration.setLastSeenAt(LocalDateTime.now());
+        deviceRepository.save(registration);
         
         // Preparar informació del dispositiu amb camps disponibles
         String deviceId = registration.getFid();
         String deviceInfo = registration.getAppVersion() != null ? 
             "Versió " + registration.getAppVersion() : "Dispositiu Android";
-        String registeredAt = "Registrat"; // Informació genèrica
+    String registeredAt = registration.getCreatedAt() != null
+        ? registration.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        : null;
         
         DeviceRegistrationStatus status = registration.getStatus();
         if (status == DeviceRegistrationStatus.PENDING) {
@@ -222,6 +236,26 @@ public class DeviceRegistrationController {
             return ResponseEntity.ok(new DeviceStatusResponse(
                 "REVOKED",
                 "El teu dispositiu ha estat revocat pels administradors. Si us plau, contacta amb l'administrador del sistema.",
+                false,
+                deviceId,
+                deviceInfo,
+                registeredAt
+            ));
+        } else if (status == DeviceRegistrationStatus.ARCHIVED) {
+            System.out.println("📦 Returning ARCHIVED status for FID: " + fid);
+            return ResponseEntity.ok(new DeviceStatusResponse(
+                "ARCHIVED",
+                "El teu dispositiu ha estat arxivat per inactivitat. Contacta amb l'administrador per reactivar-lo.",
+                false,
+                deviceId,
+                deviceInfo,
+                registeredAt
+            ));
+        } else if (status == DeviceRegistrationStatus.DELETED) {
+            System.out.println("🗑️ Returning DELETED status for FID: " + fid);
+            return ResponseEntity.ok(new DeviceStatusResponse(
+                "DELETED",
+                "El teu dispositiu té baixa lògica. Contacta amb l'administrador si s'ha de reactivar.",
                 false,
                 deviceId,
                 deviceInfo,
@@ -288,7 +322,7 @@ public class DeviceRegistrationController {
             registration.getStatus().name(),
             registration.getAppVersion(),
             associatedUser,
-            null // Temporalment null fins que afegim timestamps al model
+            registration.getCreatedAt()
         );
         
         return ResponseEntity.ok(response);
