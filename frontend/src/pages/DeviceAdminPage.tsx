@@ -1,6 +1,6 @@
 // frontend/src/pages/DeviceAdminPage.tsx
 import React from 'react';
-import { Button, Container, Loader, Table, Text, Title } from '@mantine/core';
+import { Badge, Button, Container, Loader, Table, Text, Title } from '@mantine/core';
 import {
   useDevices,
   useApproveDevice,
@@ -12,6 +12,36 @@ import {
 } from '../api/devices';
 
 export default function DeviceAdminPage() {
+  const formatDate = (iso?: string | null) => {
+    if (!iso) return '-';
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return iso; // fallback si no és ISO
+    return new Intl.DateTimeFormat('ca-ES', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(d);
+  };
+
+  const statusColor = (s: string): string => {
+    switch (s) {
+      case 'APPROVED':
+        return 'green';
+      case 'PENDING':
+        return 'yellow';
+      case 'REVOKED':
+        return 'red';
+      case 'ARCHIVED':
+        return 'gray';
+      case 'DELETED':
+        return 'dark';
+      default:
+        return 'blue';
+    }
+  };
+
   const {
     data: devices,
     isLoading: devicesLoading,
@@ -51,12 +81,12 @@ export default function DeviceAdminPage() {
             <tr>
               <th>FID</th>
               <th>User ID</th>
-              <th>Estat</th>
               <th>Versió</th>
               <th>Created</th>
               <th>Last Seen</th>
               <th>Archived</th>
               <th>Deleted</th>
+              <th>Estat</th>
               <th>Accions</th>
             </tr>
           </thead>
@@ -65,12 +95,14 @@ export default function DeviceAdminPage() {
               <tr key={d.fid}>
                 <td>{d.fid}</td>
                 <td>{d.userId ?? '-'}</td>
-                <td>{d.status}</td>
                 <td>{d.appVersion ?? '-'}</td>
-                <td>{d.createdAt ?? '-'}</td>
-                <td>{d.lastSeenAt ?? '-'}</td>
-                <td>{d.archivedAt ?? '-'}</td>
-                <td>{d.deletedAt ?? '-'}</td>
+                <td>{formatDate(d.createdAt)}</td>
+                <td>{formatDate(d.lastSeenAt)}</td>
+                <td>{formatDate(d.archivedAt)}</td>
+                <td>{formatDate(d.deletedAt)}</td>
+                <td>
+                  <Badge color={statusColor(d.status)} variant="filled">{d.status}</Badge>
+                </td>
                 <td>
                   <Button size="xs" mr="xs" onClick={() => approve.mutate(d.fid)}>
                     Aprova

@@ -93,3 +93,4 @@ frontend/*.log
 frontend/.DS_Store
 frontend/Thumbs.db
 frontend/.vercel
+.vercel
