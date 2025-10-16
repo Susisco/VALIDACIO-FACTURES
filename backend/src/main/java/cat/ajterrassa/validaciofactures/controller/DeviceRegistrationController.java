@@ -29,6 +29,8 @@ public class DeviceRegistrationController {
     @PostMapping("/devices/register")
     public ResponseEntity<?> registerDevice(@RequestBody FidRequest request,
                                             @RequestHeader(value = "X-App-Version", required = false) String appVersion) {
+        System.out.println("📱 registerDevice called with FID: " + request.getFid() + ", AppVersion: " + appVersion);
+        
         // Registre inicial del dispositiu sense usuari (anònim)
         DeviceRegistration registration = deviceRepository.findByFid(request.getFid())
                 .orElse(DeviceRegistration.builder()
@@ -36,12 +38,15 @@ public class DeviceRegistrationController {
                         .status(DeviceRegistrationStatus.PENDING)
                         .build());
         
+        System.out.println("📋 Registration status before save: " + registration.getStatus());
+        
         // Actualitzar app version si es proporciona
         if (appVersion != null) {
             registration.setAppVersion(appVersion);
         }
         
         deviceRepository.save(registration);
+        System.out.println("💾 Device saved with status: " + registration.getStatus());
         return ResponseEntity.ok(registration.getStatus());
     }
 
@@ -121,57 +126,115 @@ public class DeviceRegistrationController {
         private String status;
         private String message;
         private boolean canLogin;
+        private String deviceId;
+        private String deviceInfo;
+        private String registeredAt;
 
         public DeviceStatusResponse(String status, String message, boolean canLogin) {
             this.status = status;
             this.message = message;
             this.canLogin = canLogin;
+            this.deviceId = null;
+            this.deviceInfo = null;
+            this.registeredAt = null;
+        }
+
+        public DeviceStatusResponse(String status, String message, boolean canLogin, 
+                                  String deviceId, String deviceInfo, String registeredAt) {
+            this.status = status;
+            this.message = message;
+            this.canLogin = canLogin;
+            this.deviceId = deviceId;
+            this.deviceInfo = deviceInfo;
+            this.registeredAt = registeredAt;
         }
 
         // Getters
         public String getStatus() { return status; }
         public String getMessage() { return message; }
         public boolean isCanLogin() { return canLogin; }
+        public String getDeviceId() { return deviceId; }
+        public String getDeviceInfo() { return deviceInfo; }
+        public String getRegisteredAt() { return registeredAt; }
     }
 
     @GetMapping("/devices/status")
     public ResponseEntity<DeviceStatusResponse> getDeviceStatus(
             @RequestHeader(value = "X-Firebase-Installation-Id", required = true) String fid) {
         
-        DeviceRegistration registration = deviceRepository.findByFid(fid).orElse(null);
+        System.out.println("🔍 getDeviceStatus called with FID: " + fid);
         
+        DeviceRegistration registration = deviceRepository.findByFid(fid).orElse(null);
+
         if (registration == null) {
+            System.out.println("❌ No registration found for FID: " + fid + " → creating PENDING record");
+            // Autocreació del registre perquè l'app tingui estat coherent immediatament
+            registration = DeviceRegistration.builder()
+                    .fid(fid)
+                    .status(DeviceRegistrationStatus.PENDING)
+                    .build();
+            deviceRepository.save(registration);
+
+            System.out.println("💾 Created device with status PENDING for FID: " + fid);
             return ResponseEntity.ok(new DeviceStatusResponse(
-                "NOT_REGISTERED",
-                "Dispositiu no registrat. Registrant automàticament...",
-                false
+                "PENDING",
+                "Dispositiu registrat i pendent d'aprovació.",
+                false,
+                fid,
+                "Dispositiu Android",
+                "Acabat d'instal·lar"
             ));
         }
         
+        System.out.println("✅ Registration found - Status: " + registration.getStatus() + 
+                          ", UserID: " + registration.getUserId() + 
+                          ", AppVersion: " + registration.getAppVersion());
+        
+        // Preparar informació del dispositiu amb camps disponibles
+        String deviceId = registration.getFid();
+        String deviceInfo = registration.getAppVersion() != null ? 
+            "Versió " + registration.getAppVersion() : "Dispositiu Android";
+        String registeredAt = "Registrat"; // Informació genèrica
+        
         DeviceRegistrationStatus status = registration.getStatus();
         if (status == DeviceRegistrationStatus.PENDING) {
+            System.out.println("📋 Returning PENDING status for FID: " + fid);
             return ResponseEntity.ok(new DeviceStatusResponse(
                 "PENDING",
                 "El teu dispositiu està pendent d'aprovació per part dels administradors. Si us plau, contacta amb l'administrador del sistema.",
-                false
+                false,
+                deviceId,
+                deviceInfo,
+                registeredAt
             ));
         } else if (status == DeviceRegistrationStatus.APPROVED) {
+            System.out.println("✅ Returning APPROVED status for FID: " + fid);
             return ResponseEntity.ok(new DeviceStatusResponse(
                 "APPROVED",
                 "Dispositiu aprovat. Pots fer login.",
-                true
+                true,
+                deviceId,
+                deviceInfo,
+                registeredAt
             ));
         } else if (status == DeviceRegistrationStatus.REVOKED) {
+            System.out.println("❌ Returning REVOKED status for FID: " + fid);
             return ResponseEntity.ok(new DeviceStatusResponse(
                 "REVOKED",
                 "El teu dispositiu ha estat revocat pels administradors. Si us plau, contacta amb l'administrador del sistema.",
-                false
+                false,
+                deviceId,
+                deviceInfo,
+                registeredAt
             ));
         } else {
             return ResponseEntity.ok(new DeviceStatusResponse(
                 "UNKNOWN",
                 "Estat del dispositiu desconegut.",
-                false
+                false,
+                deviceId,
+                deviceInfo,
+                registeredAt
             ));
         }
     }
