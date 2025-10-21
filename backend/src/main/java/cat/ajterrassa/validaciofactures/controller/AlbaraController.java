@@ -88,11 +88,15 @@ public class AlbaraController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuari no trobat.");
             }
 
-            // 3) Guardar albarà + fitxer (a S3)
-            Albara saved = albaraService.saveAlbaraWithFile(dto, file, creador);
+            // 3) Guardar idempotentment: prioritzar submissionId i fer fallback a referència
+            AlbaraService.SaveOrAttachResult result = albaraService.saveOrAttachByReferencia(dto, file, creador);
 
-            // 4) Retorn
-            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+            // 4) Retorn 201 si creat, 200 si reutilitzat
+            if (result.created) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(result.albara);
+            } else {
+                return ResponseEntity.ok(result.albara);
+            }
 
         } catch (Exception e) {
             logger.error("Error guardant albarà amb fitxer", e);
@@ -127,6 +131,20 @@ public class AlbaraController {
     @GetMapping
     public ResponseEntity<List<Albara>> all() {
         return ResponseEntity.ok(albaraService.findAll());
+    }
+
+    @GetMapping("/by-referencia/{referencia}")
+    public ResponseEntity<?> getByReferencia(@PathVariable String referencia) {
+        return albaraService.findByReferencia(referencia)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("No trobat"));
+    }
+
+    @GetMapping("/by-submission/{submissionId}")
+    public ResponseEntity<?> getBySubmission(@PathVariable String submissionId) {
+        return albaraService.findBySubmissionId(submissionId)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("No trobat"));
     }
 
     @GetMapping("/{id}")

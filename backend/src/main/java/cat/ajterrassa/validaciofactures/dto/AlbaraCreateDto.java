@@ -7,6 +7,7 @@ public class AlbaraCreateDto {
     private String data; // String per convertir després a LocalDate
     private double importTotal;
     private String estat;
+    private String submissionId;
     private Long creadorId;
     private Long validatPerId;
     private Long proveidorId;
@@ -55,6 +56,14 @@ public class AlbaraCreateDto {
 
     public void setEstat(String estat) {
         this.estat = estat;
+    }
+
+    public String getSubmissionId() {
+        return submissionId;
+    }
+
+    public void setSubmissionId(String submissionId) {
+        this.submissionId = submissionId;
     }
 
     public Long getCreadorId() {

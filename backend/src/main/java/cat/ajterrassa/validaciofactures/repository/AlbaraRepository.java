@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AlbaraRepository extends JpaRepository<Albara, Long> {
@@ -26,5 +27,9 @@ public interface AlbaraRepository extends JpaRepository<Albara, Long> {
     List<Albara> findByCreadorEmail(@Param("email") String email);
 
     List<Albara> findByFacturaId(Long facturaId);
+
+    Optional<Albara> findByReferenciaDocument(String referenciaDocument);
+
+    Optional<Albara> findBySubmissionId(String submissionId);
 
 }

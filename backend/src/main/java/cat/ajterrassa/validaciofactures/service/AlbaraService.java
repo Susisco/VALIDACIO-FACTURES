@@ -22,6 +22,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
+import java.util.Optional;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import org.springframework.security.core.Authentication;
 
@@ -166,6 +168,10 @@ public class AlbaraService {
             albara.setImportTotal(BigDecimal.valueOf(dto.getImportTotal()));
             albara.setEstat(EstatDocument.valueOf(dto.getEstat()));
             albara.setCreador(creador);
+            // Assignar submissionId si arriba (idempotència per app)
+            if (dto.getSubmissionId() != null && !dto.getSubmissionId().isBlank()) {
+                albara.setSubmissionId(dto.getSubmissionId());
+            }
             System.out.println("Buscant el proveïdor amb ID: " + dto.getProveidorId());
             Proveidor proveidor = proveidorRepository.findById(dto.getProveidorId())
                     .orElseThrow(() -> new RuntimeException("Proveïdor no trobat"));
@@ -192,6 +198,75 @@ public class AlbaraService {
             System.err.println("Error al guardar l'albarà: " + e.getMessage());
             throw e;
         }
+    }
+
+    public static class SaveOrAttachResult {
+        public final Albara albara;
+        public final boolean created;
+        public SaveOrAttachResult(Albara albara, boolean created) {
+            this.albara = albara;
+            this.created = created;
+        }
+    }
+
+    // Idempotent: if an Albara with same referencia exists, return it; attach/replace file if missing
+    public SaveOrAttachResult saveOrAttachByReferencia(AlbaraCreateDto dto, MultipartFile file, Usuari creador) throws IOException {
+        // 1) Preferim submissionId si ve
+        if (dto.getSubmissionId() != null && !dto.getSubmissionId().isBlank()) {
+            Optional<Albara> bySubmission = albaraRepository.findBySubmissionId(dto.getSubmissionId());
+            if (bySubmission.isPresent()) {
+                Albara existing = bySubmission.get();
+                if (existing.getFitxerAdjunt() == null || existing.getFitxerAdjunt().isBlank()) {
+                    String subfolder = "albarans";
+                    String s3Key = guardarFitxer(existing.getId(), file, null, subfolder);
+                    existing.setFitxerAdjunt(s3Key);
+                    existing = albaraRepository.save(existing);
+                }
+                return new SaveOrAttachResult(existing, false);
+            }
+        }
+        // 2) Fallback a referencia
+        Optional<Albara> existingOpt = albaraRepository.findByReferenciaDocument(dto.getReferenciaDocument());
+        if (existingOpt.isPresent()) {
+            Albara existing = existingOpt.get();
+            // If no file attached yet or you want to replace, attach now
+            if (existing.getFitxerAdjunt() == null || existing.getFitxerAdjunt().isBlank()) {
+                String subfolder = "albarans";
+                String s3Key = guardarFitxer(existing.getId(), file, null, subfolder);
+                existing.setFitxerAdjunt(s3Key);
+                existing = albaraRepository.save(existing);
+            }
+            return new SaveOrAttachResult(existing, false);
+        }
+        // Otherwise create new
+        try {
+            Albara nou = saveAlbaraWithFile(dto, file, creador);
+            return new SaveOrAttachResult(nou, true);
+        } catch (DataIntegrityViolationException ex) {
+            // Race: someone created it concurrently; fetch and attach if needed
+            Optional<Albara> afterRace = (dto.getSubmissionId() != null && !dto.getSubmissionId().isBlank())
+                    ? albaraRepository.findBySubmissionId(dto.getSubmissionId())
+                    : albaraRepository.findByReferenciaDocument(dto.getReferenciaDocument());
+            if (afterRace.isPresent()) {
+                Albara existing = afterRace.get();
+                if (existing.getFitxerAdjunt() == null || existing.getFitxerAdjunt().isBlank()) {
+                    String subfolder = "albarans";
+                    String s3Key = guardarFitxer(existing.getId(), file, null, subfolder);
+                    existing.setFitxerAdjunt(s3Key);
+                    existing = albaraRepository.save(existing);
+                }
+                return new SaveOrAttachResult(existing, false);
+            }
+            throw ex;
+        }
+    }
+
+    public Optional<Albara> findByReferencia(String referencia) {
+        return albaraRepository.findByReferenciaDocument(referencia);
+    }
+
+    public Optional<Albara> findBySubmissionId(String submissionId) {
+        return albaraRepository.findBySubmissionId(submissionId);
     }
 
     @Transactional
