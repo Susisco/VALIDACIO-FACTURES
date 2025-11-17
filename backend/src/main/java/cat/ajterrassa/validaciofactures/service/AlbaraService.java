@@ -17,6 +17,7 @@ import cat.ajterrassa.validaciofactures.repository.ProveidorRepository;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -111,7 +112,7 @@ public class AlbaraService {
 
         // 6. ✅ Desa la KEY a BBDD 
         albara.setFitxerAdjunt(s3Key);
-        albara.setActualitzat(LocalDateTime.now());
+        albara.setActualitzat(Instant.now());
         albaraRepository.save(albara);
 
         return s3Key;

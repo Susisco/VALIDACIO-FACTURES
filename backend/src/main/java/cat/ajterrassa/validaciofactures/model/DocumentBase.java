@@ -3,8 +3,8 @@ package cat.ajterrassa.validaciofactures.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @MappedSuperclass
@@ -47,8 +47,8 @@ public abstract class DocumentBase {
 
     private String fitxerAdjunt;
 
-    private LocalDateTime creat;
-    private LocalDateTime actualitzat;
+    private Instant creat;
+    private Instant actualitzat;
 
     @ManyToOne
     @JoinColumn(name = "usuari_modificacio_id")
@@ -56,13 +56,13 @@ public abstract class DocumentBase {
 
     @PrePersist
     protected void onCreate() {
-        this.creat = LocalDateTime.now();
+        this.creat = Instant.now();
         this.actualitzat = this.creat;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.actualitzat = LocalDateTime.now();
+        this.actualitzat = Instant.now();
     }
 
     public enum EstatDocument {
@@ -150,19 +150,19 @@ public abstract class DocumentBase {
         this.fitxerAdjunt = fitxerAdjunt;
     }
 
-    public LocalDateTime getCreat() {
+    public Instant getCreat() {
         return creat;
     }
 
-    public void setCreat(LocalDateTime creat) {
+    public void setCreat(Instant creat) {
         this.creat = creat;
     }
 
-    public LocalDateTime getActualitzat() {
+    public Instant getActualitzat() {
         return actualitzat;
     }
 
-    public void setActualitzat(LocalDateTime actualitzat) {
+    public void setActualitzat(Instant actualitzat) {
         this.actualitzat = actualitzat;
     }
 

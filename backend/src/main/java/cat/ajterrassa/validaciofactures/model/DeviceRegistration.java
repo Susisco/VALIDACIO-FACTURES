@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @NoArgsConstructor
@@ -30,14 +30,14 @@ public class DeviceRegistration {
 
     @CreationTimestamp
     @Column(updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     // Darrera activitat detectada al backend (per neteja d'inactius / desinstal·lacions)
-    private LocalDateTime lastSeenAt;
+    private Instant lastSeenAt;
 
     // Marcatges opcionals per arxiu i baixa lògica (Opción C)
-    private LocalDateTime archivedAt;
-    private LocalDateTime deletedAt;
+    private Instant archivedAt;
+    private Instant deletedAt;
 
     public Long getId() {
         return id;
@@ -79,35 +79,35 @@ public class DeviceRegistration {
         this.appVersion = appVersion;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getLastSeenAt() {
+    public Instant getLastSeenAt() {
         return lastSeenAt;
     }
 
-    public void setLastSeenAt(LocalDateTime lastSeenAt) {
+    public void setLastSeenAt(Instant lastSeenAt) {
         this.lastSeenAt = lastSeenAt;
     }
 
-    public LocalDateTime getArchivedAt() {
+    public Instant getArchivedAt() {
         return archivedAt;
     }
 
-    public void setArchivedAt(LocalDateTime archivedAt) {
+    public void setArchivedAt(Instant archivedAt) {
         this.archivedAt = archivedAt;
     }
 
-    public LocalDateTime getDeletedAt() {
+    public Instant getDeletedAt() {
         return deletedAt;
     }
 
-    public void setDeletedAt(LocalDateTime deletedAt) {
+    public void setDeletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
     }
 }

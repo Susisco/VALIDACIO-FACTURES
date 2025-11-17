@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -98,7 +99,7 @@ public class PressupostService {
 
         String rutaRelativa = "/uploads/" + subfolder + "/" + nomFitxer;
         pressupost.setFitxerAdjunt(rutaRelativa);
-        pressupost.setActualitzat(LocalDateTime.now());
+        pressupost.setActualitzat(Instant.now());
 
         pressupostRepository.save(pressupost);
         return rutaRelativa;

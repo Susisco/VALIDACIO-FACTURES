@@ -1,7 +1,7 @@
 package cat.ajterrassa.validaciofactures.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 public class AlbaraDetallMatch {
@@ -16,7 +16,7 @@ public class AlbaraDetallMatch {
     @ManyToOne(optional = false)
     private FacturaDetall detall;
 
-    private LocalDateTime dataCreacio = LocalDateTime.now();
+    private Instant dataCreacio = Instant.now();
 
     public Long getId() {
         return id;
@@ -38,11 +38,11 @@ public class AlbaraDetallMatch {
         this.detall = detall;
     }
 
-    public LocalDateTime getDataCreacio() {
+    public Instant getDataCreacio() {
         return dataCreacio;
     }
 
-    public void setDataCreacio(LocalDateTime dataCreacio) {
+    public void setDataCreacio(Instant dataCreacio) {
         this.dataCreacio = dataCreacio;
     }
 }

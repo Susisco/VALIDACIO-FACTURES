@@ -38,6 +38,12 @@ interface FormValues {
   proveidorId: number;
 }
 
+function formatDateUTCToLocal(isoString: string): string {
+  if (!isoString) return "";
+  const date = new Date(isoString);
+  return date.toLocaleString("ca-ES", { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
+}
+
 export default function AlbaraFormEdit() {
   const { id } = useParams<{ id: string }>();
   const albaraId = Number(id);
@@ -180,8 +186,8 @@ export default function AlbaraFormEdit() {
   const hasFactura = typeof item.factura === "object" && item.factura !== null;
 
   const nomCreador = item.creador?.nom || "Desconegut";
-  const dataCreacio = new Date(item.creat).toLocaleString("ca-ES");
-  const dataModificacio = new Date(item.actualitzat).toLocaleString("ca-ES");
+  const dataCreacio = formatDateUTCToLocal(item.creat);
+  const dataModificacio = formatDateUTCToLocal(item.actualitzat);
   const nomModificador = item.usuariModificacio?.nom || "Desconegut";
 
   return (
@@ -465,7 +471,7 @@ export default function AlbaraFormEdit() {
               disabled
             />
             <Group justify="flex-end" mt="md">
-              <Button onClick={open}>Veure Històdic canvis</Button>
+              <Button onClick={open}>Veure Històric canvis</Button>
             </Group>{" "}
           </Group>
         </div>

@@ -6,7 +6,7 @@ import cat.ajterrassa.validaciofactures.repository.HistoricCanviRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -21,13 +21,13 @@ public class HistoricCanviService {
         canvi.setDocumentId(documentId);
         canvi.setUsuari(usuari);
         canvi.setDescripcio(descripcio);
-        canvi.setDataHora(LocalDateTime.now());
+        canvi.setDataHora(Instant.now());
 
         historicCanviRepository.save(canvi);
     }
 
     public List<HistoricCanvi> findByTipusAndDocumentId(String tipus, Long id) {
-    return historicCanviRepository.findByTipusDocumentAndDocumentIdOrderByDataHoraDesc(tipus, id);
-}
+        return historicCanviRepository.findByTipusDocumentAndDocumentIdOrderByDataHoraDesc(tipus, id);
+    }
 
 }

@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -28,9 +29,9 @@ public class DeviceCleanupService {
     // Executa cada dia a les 03:30 (configurable)
     @Scheduled(cron = "${devices.cleanup.cron:0 30 3 * * *}")
     public void cleanupInactiveDevices() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime archiveThreshold = now.minusDays(archiveAfterDays);
-        LocalDateTime deleteThreshold = now.minusDays(deleteAfterDays);
+        Instant now = Instant.now();
+        Instant archiveThreshold = now.minus(Duration.ofDays(archiveAfterDays));
+        Instant deleteThreshold = now.minus(Duration.ofDays(deleteAfterDays));
 
         // 1) ARCHIVE: dispositius APPROVED o REVOKED sense activitat des de fa X dies
         for (DeviceRegistrationStatus st : new DeviceRegistrationStatus[]{DeviceRegistrationStatus.APPROVED, DeviceRegistrationStatus.REVOKED}) {
