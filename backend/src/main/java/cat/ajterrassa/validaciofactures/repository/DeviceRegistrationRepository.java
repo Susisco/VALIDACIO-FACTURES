@@ -1,6 +1,6 @@
 package cat.ajterrassa.validaciofactures.repository;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,8 +17,8 @@ public interface DeviceRegistrationRepository extends JpaRepository<DeviceRegist
     List<AppVersionCount> countByAppVersion();
 
     // Suport per neteja i canvis d'estat per inactivitat
-    List<DeviceRegistration> findAllByStatusAndLastSeenAtBefore(DeviceRegistrationStatus status, LocalDateTime threshold);
-    List<DeviceRegistration> findAllByStatusAndArchivedAtBefore(DeviceRegistrationStatus status, LocalDateTime threshold);
+    List<DeviceRegistration> findAllByStatusAndLastSeenAtBefore(DeviceRegistrationStatus status, Instant threshold);
+    List<DeviceRegistration> findAllByStatusAndArchivedAtBefore(DeviceRegistrationStatus status, Instant threshold);
 
     interface AppVersionCount {
         String getAppVersion();

@@ -1,8 +1,8 @@
 package cat.ajterrassa.validaciofactures.dto;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class FacturaDto {
@@ -16,8 +16,8 @@ public class FacturaDto {
     private UsuariDto validatPer;      // pot ser null
 private ProveidorSimpleDto proveidor;
      private String fitxerAdjunt;       // pot ser null
-    private LocalDateTime creat;       // pot ser null
-    private LocalDateTime actualitzat;
+    private Instant creat;       // pot ser null
+    private Instant actualitzat;
     private List<DetallDto> detalls;
     private List<AlbaraSimpleDto> albaransRelacionats;
 
@@ -103,19 +103,19 @@ private ProveidorSimpleDto proveidor;
         this.fitxerAdjunt = fitxerAdjunt;
     }
 
-    public LocalDateTime getCreat() {
+    public Instant getCreat() {
         return creat;
     }
 
-    public void setCreat(LocalDateTime creat) {
+    public void setCreat(Instant creat) {
         this.creat = creat;
     }
 
-    public LocalDateTime getActualitzat() {
+    public Instant getActualitzat() {
         return actualitzat;
     }
 
-    public void setActualitzat(LocalDateTime actualitzat) {
+    public void setActualitzat(Instant actualitzat) {
         this.actualitzat = actualitzat;
     }
 

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @RestController
 @RequestMapping("/api/admin/devices")
@@ -34,7 +34,7 @@ public class AdminDeviceController {
     public ResponseEntity<?> archive(@PathVariable String fid) {
         return repo.findByFid(fid).map(reg -> {
             reg.setStatus(DeviceRegistrationStatus.ARCHIVED);
-            reg.setArchivedAt(LocalDateTime.now());
+            reg.setArchivedAt(Instant.now());
             repo.save(reg);
             return ResponseEntity.noContent().build();
         }).orElse(ResponseEntity.notFound().build());
@@ -44,7 +44,7 @@ public class AdminDeviceController {
     public ResponseEntity<?> deleteLogical(@PathVariable String fid) {
         return repo.findByFid(fid).map(reg -> {
             reg.setStatus(DeviceRegistrationStatus.DELETED);
-            reg.setDeletedAt(LocalDateTime.now());
+            reg.setDeletedAt(Instant.now());
             repo.save(reg);
             return ResponseEntity.noContent().build();
         }).orElse(ResponseEntity.notFound().build());

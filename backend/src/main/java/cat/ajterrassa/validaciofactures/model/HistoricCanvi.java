@@ -1,7 +1,7 @@
 package cat.ajterrassa.validaciofactures.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "historic_canvis")
@@ -19,7 +19,7 @@ public class HistoricCanvi {
     private Usuari usuari;
 
     private String descripcio;
-    private LocalDateTime dataHora;
+    private Instant dataHora;
 
     // Getters i setters
     public Long getId() {
@@ -58,11 +58,11 @@ public class HistoricCanvi {
         this.descripcio = descripcio;
     }
 
-    public LocalDateTime getDataHora() {
+    public Instant getDataHora() {
         return dataHora;
     }
 
-    public void setDataHora(LocalDateTime dataHora) {
+    public void setDataHora(Instant dataHora) {
         this.dataHora = dataHora;
     }
 }
